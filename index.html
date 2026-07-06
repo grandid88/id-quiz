@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>I&D Quiz</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /* ── Écran d'accueil ─────────────────────────────────── */
+  #screen-register {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .register-header { text-align: center; margin-bottom: 36px; }
+  .register-header .icon { font-size: 48px; margin-bottom: 12px; }
+
+  .tables-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .table-option input { display: none; }
+  .table-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(212,175,55,0.2);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,248,240,0.7);
+    transition: all 0.2s;
+  }
+  .table-option label .t-emoji { font-size: 20px; }
+  .table-option input:checked + label {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.15);
+    color: var(--gold);
+    box-shadow: 0 0 12px rgba(212,175,55,0.2);
+  }
+
+  /* ── Écran d'attente ──────────────────────────────────── */
+  #screen-wait {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .wait-icon { font-size: 64px; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wait-title { font-family: var(--display-font); font-size: 32px; color: var(--gold); margin-bottom: 8px; }
+  .wait-sub { font-size: 14px; color: rgba(255,248,240,0.6); line-height: 1.6; }
+  .wait-player { margin-top: 20px; font-size: 13px; color: var(--coral-light); font-weight: 600; }
+
+  /* ── Écran de jeu ─────────────────────────────────────── */
+  #screen-game {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 40px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .q-number {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--coral-light);
+    font-weight: 600;
+  }
+
+  /* Timer circulaire */
+  .timer-wrap {
+    position: relative;
+    width: 56px; height: 56px;
+  }
+  .timer-wrap svg { transform: rotate(-90deg); }
+  .timer-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 4; }
+  .timer-bar {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .q-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--display-font);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ivory);
+    line-height: 1.4;
+    padding: 20px 0;
+  }
+
+  /* Boutons VRAI / FAUX */
+  .answer-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: auto;
+  }
+  .btn-vrai, .btn-faux {
+    height: 90px;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .btn-vrai {
+    background: linear-gradient(135deg, #2E7D32, #43A047);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(46,125,50,0.4);
+  }
+  .btn-faux {
+    background: linear-gradient(135deg, #C62828, #E53935);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(198,40,40,0.4);
+  }
+  .btn-vrai:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(46,125,50,0.5); }
+  .btn-faux:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(198,40,40,0.5); }
+  .btn-vrai:active, .btn-faux:active { transform: scale(0.96); }
+  .btn-vrai .btn-icon, .btn-faux .btn-icon { font-size: 28px; line-height: 1; }
+
+  /* État après réponse */
+  .btn-vrai.selected, .btn-faux.selected { transform: scale(1.05); filter: brightness(1.15); }
+  .btn-vrai.dimmed, .btn-faux.dimmed { opacity: 0.3; pointer-events: none; }
+  .answered-msg {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: rgba(255,248,240,0.6);
+    font-style: italic;
+  }
+
+  /* ── Écran résultats après chaque question ─────────────── */
+  #screen-result {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .result-icon { font-size: 72px; margin-bottom: 12px; }
+  .result-label { font-family: var(--display-font); font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .result-points { font-size: 48px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+  .result-pts-label { font-size: 13px; color: rgba(255,248,240,0.6); margin-bottom: 20px; }
+  .result-table-score {
+    font-size: 14px;
+    color: var(--coral-light);
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1px solid rgba(232,115,90,0.3);
+    border-radius: var(--radius-pill);
+    margin-bottom: 20px;
+  }
+
+  /* ── Écran fin de jeu ─────────────────────────────────── */
+  #screen-end {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .end-icon { font-size: 64px; margin-bottom: 16px; }
+  .end-title { font-family: var(--display-font); font-size: 36px; color: var(--gold); margin-bottom: 8px; }
+  .end-sub { font-size: 14px; color: rgba(255,248,240,0.6); }
+</style>
+</head>
+<body class="page-bg">
+
+<!-- ÉCRAN 1 : Enregistrement -->
+<div id="screen-register">
+  <div class="register-header">
+    <div class="icon">🎯</div>
+    <div class="page-eyebrow">Isabelle & Didier · 26 juin 2027</div>
+    <h1 class="page-title">I&D Quiz</h1>
+    <p class="page-sub">Qui connaît le mieux les mariés ?</p>
+  </div>
+  <hr class="gold-rule">
+  <div class="card">
+    <div class="field">
+      <label for="input-prenom">Votre prénom</label>
+      <input type="text" id="input-prenom" placeholder="Ex : Marie" maxlength="24" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Votre table</label>
+      <div class="tables-grid" id="tables-grid"></div>
+    </div>
+    <button class="btn btn-primary btn-block" id="btn-register" style="margin-top:20px" disabled>
+      ✈ Je suis prêt(e) !
+    </button>
+  </div>
+</div>
+
+<!-- ÉCRAN 2 : Attente question -->
+<div id="screen-wait" class="hidden">
+  <div class="wait-icon">✈️</div>
+  <div class="wait-title">En attente…</div>
+  <p class="wait-sub">Le DJ va bientôt lancer<br>la prochaine question !</p>
+  <div class="wait-player" id="wait-player-info"></div>
+</div>
+
+<!-- ÉCRAN 3 : Question en cours -->
+<div id="screen-game" class="hidden">
+  <div class="game-header">
+    <div class="q-number" id="q-number">Question 1 / 10</div>
+    <div class="timer-wrap">
+      <svg width="56" height="56" viewBox="0 0 48 48">
+        <circle class="timer-track" cx="24" cy="24" r="22"/>
+        <circle class="timer-bar" id="timer-bar" cx="24" cy="24" r="22"/>
+      </svg>
+      <div class="timer-text" id="timer-text">30</div>
+    </div>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="answer-buttons">
+    <button class="btn-vrai" id="btn-vrai">
+      <span class="btn-icon">✅</span>
+      VRAI
+    </button>
+    <button class="btn-faux" id="btn-faux">
+      <span class="btn-icon">❌</span>
+      FAUX
+    </button>
+  </div>
+  <div class="answered-msg hidden" id="answered-msg">Réponse enregistrée — en attente des résultats…</div>
+</div>
+
+<!-- ÉCRAN 4 : Résultat de la question -->
+<div id="screen-result" class="hidden">
+  <div class="result-icon" id="result-icon"></div>
+  <div class="result-label" id="result-label"></div>
+  <div class="result-points" id="result-points"></div>
+  <div class="result-pts-label" id="result-pts-label"></div>
+  <div class="result-table-score" id="result-table-score"></div>
+  <p class="page-sub">Préparez-vous pour la prochaine question…</p>
+</div>
+
+<!-- ÉCRAN 5 : Fin du jeu -->
+<div id="screen-end" class="hidden">
+  <div class="end-icon">🏆</div>
+  <div class="end-title">Quiz terminé !</div>
+  <hr class="gold-rule" style="width:120px">
+  <p class="end-sub">Merci d'avoir joué !<br>Regardez l'écran pour découvrir<br>le classement final.</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

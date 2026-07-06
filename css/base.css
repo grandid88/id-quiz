@@ -1,0 +1,164 @@
+/* ==========================================================
+   I&D QUIZ — base.css
+========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600;700;800&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  font-family: var(--text-font);
+  -webkit-font-smoothing: antialiased;
+  background: var(--plum);
+  color: var(--ivory);
+}
+
+/* Fond avec dégradé tropical */
+.page-bg {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(232,115,90,0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(194,24,91,0.25) 0%, transparent 50%),
+    linear-gradient(160deg, #2D1030 0%, #1A0A1E 60%, #2D1030 100%);
+}
+
+/* Cartes */
+.card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: var(--radius-soft);
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-family: var(--text-font);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-block { width: 100%; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--coral), var(--rose));
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(232,115,90,0.4);
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--ink);
+  box-shadow: var(--shadow-glow);
+}
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+}
+
+/* Champ de formulaire */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.field input[type="text"],
+.field input[type="password"],
+.field select {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(212,175,55,0.3);
+  border-radius: 12px;
+  color: var(--ivory);
+  font-family: var(--text-font);
+  font-size: 15px;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
+}
+.field select option { background: var(--plum); color: var(--ivory); }
+
+/* Titre page */
+.page-title {
+  font-family: var(--display-font);
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold);
+  text-align: center;
+  line-height: 1.1;
+  text-shadow: 0 2px 16px rgba(212,175,55,0.3);
+}
+.page-eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--coral-light);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.page-sub {
+  font-size: 14px;
+  color: rgba(255,248,240,0.6);
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* Ligne dorée décorative */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border: none;
+  margin: 20px 0;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--rose-dark);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Spinner */
+.spinner {
+  width: 20px; height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hidden { display: none !important; }

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I&D Quiz — Écran</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+  .screen-wrap {
+    width: 100vw; height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 60px;
+    position: relative;
+  }
+
+  /* Décor de fond */
+  .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .deco-1 { width: 600px; height: 600px; top: -200px; left: -200px;
+    background: radial-gradient(circle, rgba(232,115,90,0.12), transparent 70%); }
+  .deco-2 { width: 500px; height: 500px; bottom: -150px; right: -150px;
+    background: radial-gradient(circle, rgba(194,24,91,0.12), transparent 70%); }
+
+  /* ── Écran d'attente ──────────────────────────────────── */
+  #s-wait { text-align: center; }
+  .wait-big-icon { font-size: 120px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .wait-big-title { font-family: var(--display-font); font-size: 80px; color: var(--gold);
+    text-shadow: 0 4px 24px rgba(212,175,55,0.4); margin: 16px 0 12px; }
+  .wait-big-sub { font-size: 24px; color: rgba(255,248,240,0.6); }
+
+  /* ── Écran question ───────────────────────────────────── */
+  #s-question {
+    width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 30px;
+    height: 100%;
+  }
+  .q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .q-label {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--coral-light);
+  }
+  .q-timer-bar-wrap {
+    flex: 1;
+    height: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    margin: 0 32px;
+    overflow: hidden;
+  }
+  .q-timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--coral));
+    border-radius: 5px;
+    transition: width 1s linear;
+    width: 100%;
+  }
+  .q-timer-num {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--gold);
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .q-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .q-text-big {
+    font-family: var(--display-font);
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--ivory);
+    text-align: center;
+    line-height: 1.25;
+    max-width: 900px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+
+  .q-participants {
+    text-align: center;
+    font-size: 18px;
+    color: rgba(255,248,240,0.5);
+    font-weight: 600;
+  }
+
+  /* ── Écran résultats ──────────────────────────────────── */
+  #s-results {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .results-left { }
+  .results-answer-block {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .answer-revealed {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 40px;
+    border-radius: 20px;
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .answer-revealed.vrai {
+    background: rgba(46,125,50,0.2);
+    border: 2px solid rgba(102,187,106,0.5);
+    color: #81C784;
+  }
+  .answer-revealed.faux {
+    background: rgba(198,40,40,0.2);
+    border: 2px solid rgba(239,83,80,0.5);
+    color: #EF9A9A;
+  }
+  .q-text-small {
+    font-family: var(--display-font);
+    font-size: 28px;
+    color: rgba(255,248,240,0.7);
+    text-align: center;
+    line-height: 1.4;
+    margin-bottom: 32px;
+  }
+
+  /* Podium top 3 */
+  .podium-title {
+    font-size: 16px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .podium {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .podium-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 16px;
+    padding: 14px 20px;
+    animation: slideIn 0.4s ease;
+  }
+  .podium-item.rank-1 { border-color: var(--gold); background: rgba(212,175,55,0.1); }
+  .podium-item.rank-2 { border-color: rgba(192,192,192,0.4); }
+  .podium-item.rank-3 { border-color: rgba(205,127,50,0.4); }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:none} }
+
+  .podium-rank { font-size: 28px; width: 40px; text-align: center; }
+  .podium-table { font-size: 20px; font-weight: 700; color: var(--ivory); flex: 1; }
+  .podium-time { font-size: 15px; color: rgba(255,248,240,0.6); }
+  .podium-pts { font-size: 24px; font-weight: 800; color: var(--gold); }
+
+  /* Stats côté droit */
+  .results-right { }
+  .stats-title {
+    font-size: 16px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--coral-light);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .stat-bars { display: flex; flex-direction: column; gap: 12px; }
+  .stat-row { }
+  .stat-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .stat-label .stat-name { font-weight: 600; color: var(--ivory); }
+  .stat-label .stat-count { color: rgba(255,248,240,0.6); }
+  .stat-bar-bg { height: 12px; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+  .stat-bar-fill.vrai-bar { background: linear-gradient(90deg, #2E7D32, #66BB6A); }
+  .stat-bar-fill.faux-bar { background: linear-gradient(90deg, #C62828, #EF5350); }
+
+  /* Classement général */
+  .classement-title {
+    font-family: var(--display-font);
+    font-size: 22px;
+    color: var(--gold);
+    margin: 28px 0 14px;
+    border-bottom: 1px solid rgba(212,175,55,0.3);
+    padding-bottom: 8px;
+  }
+  .classement-list { display: flex; flex-direction: column; gap: 8px; }
+  .classement-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+  }
+  .class-rank { font-size: 18px; width: 32px; color: rgba(255,248,240,0.5); font-weight: 700; }
+  .class-table { font-size: 16px; font-weight: 600; color: var(--ivory); flex: 1; }
+  .class-pts { font-size: 18px; font-weight: 800; color: var(--gold); }
+
+  /* ── Écran fin ────────────────────────────────────────── */
+  #s-end {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .end-left { text-align: center; }
+  .end-trophy { font-size: 120px; animation: float 3s ease-in-out infinite; }
+  .end-title-big { font-family: var(--display-font); font-size: 72px; color: var(--gold);
+    line-height: 1.1; text-shadow: 0 4px 24px rgba(212,175,55,0.4); }
+  .end-sub-big { font-size: 22px; color: rgba(255,248,240,0.6); margin-top: 12px; }
+
+  .end-podium { display: flex; flex-direction: column; gap: 16px; }
+  .end-podium-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px;
+    border-radius: 20px;
+    border: 2px solid rgba(212,175,55,0.2);
+  }
+  .end-podium-item.p1 { background: rgba(212,175,55,0.15); border-color: var(--gold); transform: scale(1.04); }
+  .end-podium-item.p2 { background: rgba(192,192,192,0.08); border-color: rgba(192,192,192,0.3); }
+  .end-podium-item.p3 { background: rgba(205,127,50,0.08); border-color: rgba(205,127,50,0.3); }
+  .end-podium-medal { font-size: 36px; }
+  .end-podium-name { font-size: 22px; font-weight: 700; flex: 1; }
+  .end-podium-pts { font-size: 28px; font-weight: 800; color: var(--gold); }
+  .end-podium-pts span { font-size: 14px; font-weight: 400; color: rgba(255,248,240,0.6); }
+</style>
+</head>
+<body class="page-bg">
+
+<div class="deco-circle deco-1"></div>
+<div class="deco-circle deco-2"></div>
+
+<div class="screen-wrap">
+
+  <!-- ATTENTE -->
+  <div id="s-wait">
+    <div class="wait-big-icon">🎯</div>
+    <div class="wait-big-title">I&D Quiz</div>
+    <p class="wait-big-sub">Isabelle & Didier · 26 juin 2027<br>Scannez le QR code pour rejoindre le jeu</p>
+  </div>
+
+  <!-- QUESTION EN COURS -->
+  <div id="s-question" class="hidden">
+    <div class="q-header">
+      <div class="q-label" id="sq-number">Question 1 / 10</div>
+      <div class="q-timer-bar-wrap">
+        <div class="q-timer-bar" id="sq-timer-bar"></div>
+      </div>
+      <div class="q-timer-num" id="sq-timer-num">30</div>
+    </div>
+    <div class="q-body">
+      <div class="q-text-big" id="sq-text"></div>
+    </div>
+    <div class="q-participants" id="sq-participants">0 réponse(s)</div>
+  </div>
+
+  <!-- RÉSULTATS DE LA QUESTION -->
+  <div id="s-results" class="hidden">
+    <div class="results-left">
+      <div class="results-answer-block">
+        <div class="answer-revealed" id="sr-answer-badge"></div>
+        <div class="q-text-small" id="sr-q-text"></div>
+      </div>
+      <div class="podium-title">⚡ Les 3 tables les plus rapides</div>
+      <div class="podium" id="sr-podium"></div>
+    </div>
+    <div class="results-right">
+      <div class="stats-title">Réponses des invités</div>
+      <div class="stat-bars">
+        <div class="stat-row">
+          <div class="stat-label">
+            <span class="stat-name">✅ VRAI</span>
+            <span class="stat-count" id="sr-vrai-count">0</span>
+          </div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill vrai-bar" id="sr-vrai-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">
+            <span class="stat-name">❌ FAUX</span>
+            <span class="stat-count" id="sr-faux-count">0</span>
+          </div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill faux-bar" id="sr-faux-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="classement-title">🏆 Classement général</div>
+      <div class="classement-list" id="sr-classement"></div>
+    </div>
+  </div>
+
+  <!-- FIN DU JEU -->
+  <div id="s-end" class="hidden">
+    <div class="end-left">
+      <div class="end-trophy">🏆</div>
+      <div class="end-title-big">Quiz<br>terminé !</div>
+      <p class="end-sub-big">Félicitations à tous les joueurs</p>
+    </div>
+    <div class="end-right">
+      <div class="end-podium" id="se-podium"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/screen.js"></script>
+</body>
+</html>

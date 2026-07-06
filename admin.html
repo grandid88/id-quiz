@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>I&D Quiz — DJ</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .page { max-width: 540px; margin: 0 auto; padding: 32px 20px 64px; min-height: 100vh; }
+
+  /* PIN */
+  .pin-card { text-align: center; margin-top: 80px; }
+  .pin-input {
+    width: 100%; text-align: center;
+    font-size: 36px; letter-spacing: 18px; padding: 16px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(212,175,55,0.4);
+    border-radius: 14px; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .pin-error { color: var(--coral); font-size: 13px; margin-top: 8px; }
+
+  /* Status bar */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 14px;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); margin-right: 8px; }
+  .status-dot.active { background: #66BB6A; box-shadow: 0 0 8px rgba(102,187,106,0.6); }
+
+  /* Question card */
+  .q-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .q-card.active { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+  .q-card.done { opacity: 0.45; }
+
+  .q-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .q-card-num { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--coral-light); font-weight: 700; }
+  .q-card-badge {
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; letter-spacing: 1px;
+  }
+  .badge-vrai { background: rgba(46,125,50,0.2); color: #81C784; }
+  .badge-faux { background: rgba(198,40,40,0.2); color: #EF9A9A; }
+
+  .q-card-text { font-size: 15px; color: var(--ivory); line-height: 1.5; }
+
+  /* Boutons contrôle */
+  .control-bar {
+    position: sticky;
+    bottom: 20px;
+    background: rgba(45, 16, 48, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .btn-launch { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--ink); }
+  .btn-results { background: linear-gradient(135deg, var(--coral), var(--rose)); color: #fff; }
+  .btn-next { background: rgba(255,255,255,0.1); color: var(--ivory); border: 1px solid rgba(255,255,255,0.2); }
+  .btn-end { background: rgba(198,40,40,0.2); color: var(--coral); border: 1px solid rgba(198,40,40,0.3); }
+  .btn-reset { background: transparent; color: rgba(255,248,240,0.4); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; padding: 8px 14px; }
+
+  .section-title {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-weight: 700; margin-bottom: 14px;
+  }
+</style>
+</head>
+<body class="page-bg">
+<div class="page">
+
+  <!-- PIN -->
+  <div id="pin-screen">
+    <div class="register-header" style="text-align:center;margin-bottom:32px">
+      <div class="page-eyebrow">Espace DJ</div>
+      <h1 class="page-title">I&D Quiz</h1>
+    </div>
+    <div class="card pin-card">
+      <p style="font-size:14px;color:rgba(255,248,240,0.6);margin-bottom:16px">Code d'accès</p>
+      <input type="password" id="pin-input" inputmode="numeric" maxlength="4" class="pin-input" placeholder="••••">
+      <button class="btn btn-primary btn-block" id="btn-pin">Accéder</button>
+      <div class="pin-error hidden" id="pin-error">Code incorrect.</div>
+    </div>
+  </div>
+
+  <!-- INTERFACE DJ -->
+  <div id="dj-screen" class="hidden">
+    <div class="page-eyebrow" style="margin-bottom:4px">Interface DJ</div>
+    <h1 class="page-title" style="font-size:32px;margin-bottom:16px">I&D Quiz</h1>
+
+    <!-- Status -->
+    <div class="status-bar">
+      <div style="display:flex;align-items:center">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">En attente</span>
+      </div>
+      <span id="status-q" style="color:rgba(255,248,240,0.5)"></span>
+    </div>
+
+    <!-- Liste des questions -->
+    <div class="section-title">Les 10 questions</div>
+    <div id="questions-list"></div>
+
+    <!-- Barre de contrôle sticky -->
+    <div class="control-bar">
+      <button class="btn btn-launch" id="btn-launch" style="flex:2">▶ Lancer</button>
+      <button class="btn btn-results" id="btn-results" style="flex:2" disabled>📊 Résultats</button>
+      <button class="btn btn-next" id="btn-next" style="flex:1" disabled>→ Suivante</button>
+      <button class="btn btn-end" id="btn-end" style="flex:1" disabled>■ Fin</button>
+    </div>
+
+    <div style="text-align:center;margin-top:12px">
+      <button class="btn btn-reset" id="btn-reset">🔄 Réinitialiser le jeu</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
