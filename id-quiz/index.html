@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>I&D Quiz</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .page { max-width: 420px; margin: 0 auto; padding: 36px 20px 64px; min-height: 100vh; }
+
+  /* ── Grille des tables ─────────────────────────────────── */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .table-option input { display: none; }
+  .table-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(61,107,79,0.15);
+    background: #fff;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(43,38,32,0.6);
+    transition: all 0.2s;
+  }
+  .table-option label .t-emoji { font-size: 20px; }
+  .table-option input:checked + label {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    color: var(--forest-dark);
+    box-shadow: 0 2px 10px rgba(201,168,76,0.2);
+  }
+
+  /* ── Écran d'attente ───────────────────────────────────── */
+  #screen-wait {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .wait-icon { font-size: 64px; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .wait-title {
+    font-family: var(--script-font);
+    font-size: 42px;
+    color: var(--forest-dark);
+    margin-bottom: 8px;
+  }
+  .wait-sub { font-family: var(--display-font); font-size: 17px; color: var(--ink); opacity: 0.65; line-height: 1.5; }
+  .wait-player {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--forest);
+    padding: 8px 18px;
+    border: 1px solid rgba(61,107,79,0.2);
+    border-radius: var(--radius-pill);
+    background: rgba(61,107,79,0.05);
+  }
+
+  /* ── Écran de jeu ──────────────────────────────────────── */
+  #screen-game {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 32px;
+    max-width: 420px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .q-number {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--forest);
+    font-weight: 600;
+  }
+
+  /* Timer circulaire */
+  .timer-wrap { position: relative; width: 56px; height: 56px; }
+  .timer-wrap svg { transform: rotate(-90deg); }
+  .timer-track { fill: none; stroke: rgba(61,107,79,0.15); stroke-width: 4; }
+  .timer-bar {
+    fill: none; stroke: var(--gold); stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 138; stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .timer-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: var(--gold);
+  }
+
+  .q-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--display-font);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.45;
+    padding: 12px 0;
+    overflow: hidden;
+  }
+
+  /* Boutons VRAI / FAUX */
+  .answer-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+  .btn-vrai, .btn-faux {
+    height: 80px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .btn-vrai {
+    background: linear-gradient(135deg, #2E7D32, #43A047);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(46,125,50,0.3);
+  }
+  .btn-faux {
+    background: linear-gradient(135deg, #C62828, #E53935);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(198,40,40,0.3);
+  }
+  .btn-vrai:hover { transform: translateY(-3px); }
+  .btn-faux:hover { transform: translateY(-3px); }
+  .btn-icon { font-size: 28px; line-height: 1; }
+  .btn-vrai.selected, .btn-faux.selected { transform: scale(1.05); filter: brightness(1.1); }
+  .btn-vrai.dimmed, .btn-faux.dimmed { opacity: 0.3; pointer-events: none; }
+  .answered-msg {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--forest);
+    font-style: italic;
+  }
+
+  /* ── Résultat question ─────────────────────────────────── */
+  #screen-result {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .result-icon { font-size: 72px; margin-bottom: 12px; }
+  .result-label {
+    font-family: var(--display-font);
+    font-size: 30px; font-weight: 700; margin-bottom: 6px;
+  }
+  .result-points { font-size: 52px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+  .result-pts-label { font-size: 13px; color: rgba(43,38,32,0.55); margin-bottom: 20px; }
+  .result-table-score {
+    font-size: 14px; color: var(--forest); font-weight: 600;
+    padding: 10px 20px;
+    border: 1px solid rgba(61,107,79,0.2);
+    border-radius: var(--radius-pill);
+    background: rgba(61,107,79,0.06);
+    margin-bottom: 20px;
+  }
+
+  /* ── Fin de jeu ────────────────────────────────────────── */
+  #screen-end {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .end-icon { font-size: 64px; margin-bottom: 16px; }
+  .end-title { font-family: var(--script-font); font-size: 48px; color: var(--forest-dark); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ENREGISTREMENT -->
+<div id="screen-register">
+  <div class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Isabelle &amp; Didier · 26 juin 2027</div>
+      <h1 class="page-title">I&D Quiz</h1>
+      <p class="page-sub">Qui connaît le mieux les mariés ?</p>
+    </div>
+    <hr class="gold-rule">
+    <div class="card">
+      <div class="field">
+        <label for="input-prenom">Votre prénom</label>
+        <input type="text" id="input-prenom" placeholder="Ex : Marie" maxlength="24" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Votre table</label>
+        <div class="tables-grid" id="tables-grid"></div>
+      </div>
+      <button class="btn btn-primary btn-block" id="btn-register" style="margin-top:20px" disabled>
+        ✈ Je suis prêt(e) !
+      </button>
+    </div>
+    <p style="text-align:center;font-size:12px;color:rgba(43,38,32,0.4);margin-top:24px">I&D QUIZ · Mission Paradis</p>
+  </div>
+</div>
+
+<!-- ATTENTE -->
+<div id="screen-wait" class="hidden">
+  <div class="wait-icon">🎯</div>
+  <h1 class="wait-title">En attente…</h1>
+  <p class="wait-sub">Le DJ va bientôt lancer<br>la prochaine question !</p>
+  <div class="wait-player" id="wait-player-info"></div>
+</div>
+
+<!-- QUESTION -->
+<div id="screen-game" class="hidden">
+  <div class="game-header">
+    <div class="q-number" id="q-number">Question 1 / 10</div>
+    <div class="timer-wrap">
+      <svg width="56" height="56" viewBox="0 0 48 48">
+        <circle class="timer-track" cx="24" cy="24" r="22"/>
+        <circle class="timer-bar" id="timer-bar" cx="24" cy="24" r="22"/>
+      </svg>
+      <div class="timer-text" id="timer-text">30</div>
+    </div>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="answer-buttons">
+    <button class="btn-vrai" id="btn-vrai">
+      <span class="btn-icon">✅</span>VRAI
+    </button>
+    <button class="btn-faux" id="btn-faux">
+      <span class="btn-icon">❌</span>FAUX
+    </button>
+  </div>
+  <div class="answered-msg hidden" id="answered-msg">Réponse enregistrée — en attente des résultats…</div>
+</div>
+
+<!-- RÉSULTAT -->
+<div id="screen-result" class="hidden">
+  <div class="result-icon" id="result-icon"></div>
+  <div class="result-label" id="result-label"></div>
+  <div class="result-points" id="result-points"></div>
+  <div class="result-pts-label" id="result-pts-label"></div>
+  <div class="result-table-score" id="result-table-score"></div>
+  <p style="font-family:var(--display-font);font-size:16px;color:rgba(43,38,32,0.6)">
+    Préparez-vous pour la prochaine question…
+  </p>
+</div>
+
+<!-- FIN -->
+<div id="screen-end" class="hidden">
+  <div class="end-icon">🏆</div>
+  <div class="end-title">Quiz terminé !</div>
+  <hr class="gold-rule" style="width:120px">
+  <p style="font-family:var(--display-font);font-size:17px;color:rgba(43,38,32,0.65);line-height:1.6">
+    Merci d'avoir joué !<br>Regardez l'écran pour découvrir<br>le classement final.
+  </p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
