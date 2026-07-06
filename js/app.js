@@ -93,8 +93,8 @@ function listenGame() {
       if (qIdx !== currentQIndex) {
         currentQIndex = qIdx;
         hasAnswered = false;
-        questionStartTime = game.questionStartTime;
-        showQuestion(qIdx, game.questionStartTime);
+        questionStartTime = Date.now(); // ✅ horloge locale du téléphone
+        showQuestion(qIdx, questionStartTime);
       }
     }
     else if (game.status === 'results') {
@@ -141,8 +141,8 @@ function startTimer(startTimestamp) {
 
     // Couleur d'alerte sur les 10 dernières secondes
     if (remaining <= 10) {
-      timerBar.style.stroke = 'var(--coral)';
-      timerText.style.color = 'var(--coral)';
+      timerBar.style.stroke = 'var(--terracotta)';
+      timerText.style.color = 'var(--terracotta)';
     } else {
       timerBar.style.stroke = 'var(--gold)';
       timerText.style.color = 'var(--gold)';
