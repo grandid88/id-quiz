@@ -7,133 +7,150 @@
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <style>
-  .page { max-width: 540px; margin: 0 auto; padding: 32px 20px 64px; min-height: 100vh; }
+  .page { max-width: 540px; margin: 0 auto; padding: 32px 20px 80px; min-height: 100vh; }
 
   /* PIN */
-  .pin-card { text-align: center; margin-top: 80px; }
   .pin-input {
     width: 100%; text-align: center;
     font-size: 36px; letter-spacing: 18px; padding: 16px;
-    background: rgba(255,255,255,0.08);
-    border: 1.5px solid rgba(212,175,55,0.4);
-    border-radius: 14px; color: var(--gold);
+    background: #fff; border: 1.5px solid rgba(61,107,79,0.2);
+    border-radius: 14px; color: var(--forest-dark);
     margin-bottom: 16px;
   }
-  .pin-error { color: var(--coral); font-size: 13px; margin-top: 8px; }
+  .pin-input:focus { outline: none; border-color: var(--gold); }
+  .pin-error { color: var(--terracotta); font-size: 13px; margin-top: 8px; text-align: center; }
 
   /* Status bar */
   .status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 12px 18px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(212,175,55,0.15);
+    background: var(--ivory-soft);
+    border: 1px solid rgba(61,107,79,0.1);
     border-radius: 14px;
     margin-bottom: 20px;
-    font-size: 13px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow-card);
   }
-  .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); margin-right: 8px; }
-  .status-dot.active { background: #66BB6A; box-shadow: 0 0 8px rgba(102,187,106,0.6); }
+  .status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--terracotta); margin-right: 8px; flex-shrink: 0;
+  }
+  .status-dot.active {
+    background: var(--forest);
+    box-shadow: 0 0 8px rgba(61,107,79,0.5);
+  }
 
-  /* Question card */
+  /* Cartes questions */
   .q-card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(212,175,55,0.15);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 14px;
-    transition: border-color 0.2s;
-    cursor: default;
+    background: var(--ivory-soft);
+    border: 1px solid rgba(61,107,79,0.1);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(43,38,32,0.06);
+    transition: border-color 0.2s, background 0.2s;
   }
-  .q-card.active { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+  .q-card.active {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 4px 16px rgba(201,168,76,0.15);
+  }
   .q-card.done { opacity: 0.45; }
-
   .q-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 8px;
   }
-  .q-card-num { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--coral-light); font-weight: 700; }
+  .q-card-num {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--forest); font-weight: 700;
+  }
   .q-card-badge {
     font-size: 11px; font-weight: 700; padding: 3px 10px;
     border-radius: 20px; letter-spacing: 1px;
   }
-  .badge-vrai { background: rgba(46,125,50,0.2); color: #81C784; }
-  .badge-faux { background: rgba(198,40,40,0.2); color: #EF9A9A; }
+  .badge-vrai { background: rgba(46,125,50,0.12); color: #2E7D32; }
+  .badge-faux { background: rgba(198,40,40,0.12); color: #C62828; }
+  .q-card-text { font-size: 14px; color: var(--ink); line-height: 1.5; }
 
-  .q-card-text { font-size: 15px; color: var(--ivory); line-height: 1.5; }
-
-  /* Boutons contrôle */
+  /* Barre de contrôle sticky */
   .control-bar {
-    position: sticky;
-    bottom: 20px;
-    background: rgba(45, 16, 48, 0.95);
+    position: sticky; bottom: 16px;
+    background: rgba(251,244,233,0.97);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(212,175,55,0.2);
+    border: 1px solid rgba(201,168,76,0.3);
     border-radius: 20px;
-    padding: 16px;
-    display: flex;
-    gap: 10px;
+    padding: 14px;
+    display: flex; gap: 8px;
     margin-top: 24px;
+    box-shadow: 0 8px 32px rgba(43,38,32,0.12);
   }
-  .btn-launch { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--ink); }
-  .btn-results { background: linear-gradient(135deg, var(--coral), var(--rose)); color: #fff; }
-  .btn-next { background: rgba(255,255,255,0.1); color: var(--ivory); border: 1px solid rgba(255,255,255,0.2); }
-  .btn-end { background: rgba(198,40,40,0.2); color: var(--coral); border: 1px solid rgba(198,40,40,0.3); }
-  .btn-reset { background: transparent; color: rgba(255,248,240,0.4); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; padding: 8px 14px; }
-
+  .btn-results { background: var(--terracotta); color: #fff; }
+  .btn-results:hover { background: #a85a36; }
+  .btn-next {
+    background: transparent; color: var(--forest);
+    border: 1.5px solid var(--forest);
+  }
+  .btn-end {
+    background: transparent; color: var(--terracotta);
+    border: 1.5px solid var(--terracotta);
+    font-size: 13px;
+  }
+  .btn-reset {
+    background: transparent; color: rgba(43,38,32,0.4);
+    border: 1px solid rgba(43,38,32,0.15);
+    font-size: 12px; padding: 8px 14px;
+  }
   .section-title {
     font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--gold); font-weight: 700; margin-bottom: 14px;
+    color: var(--forest); font-weight: 700; margin-bottom: 14px;
   }
 </style>
 </head>
-<body class="page-bg">
+<body>
 <div class="page">
 
   <!-- PIN -->
   <div id="pin-screen">
-    <div class="register-header" style="text-align:center;margin-bottom:32px">
+    <div class="page-header">
       <div class="page-eyebrow">Espace DJ</div>
       <h1 class="page-title">I&D Quiz</h1>
     </div>
-    <div class="card pin-card">
-      <p style="font-size:14px;color:rgba(255,248,240,0.6);margin-bottom:16px">Code d'accès</p>
+    <hr class="gold-rule">
+    <div class="card" style="text-align:center">
+      <p style="font-size:14px;color:rgba(43,38,32,0.6);margin-bottom:16px">Code d'accès DJ</p>
       <input type="password" id="pin-input" inputmode="numeric" maxlength="4" class="pin-input" placeholder="••••">
       <button class="btn btn-primary btn-block" id="btn-pin">Accéder</button>
-      <div class="pin-error hidden" id="pin-error">Code incorrect.</div>
+      <div class="pin-error hidden" id="pin-error">Code incorrect, réessayez.</div>
     </div>
   </div>
 
   <!-- INTERFACE DJ -->
   <div id="dj-screen" class="hidden">
-    <div class="page-eyebrow" style="margin-bottom:4px">Interface DJ</div>
-    <h1 class="page-title" style="font-size:32px;margin-bottom:16px">I&D Quiz</h1>
+    <div class="page-header">
+      <div class="page-eyebrow">Interface DJ · I&D Quiz</div>
+      <h1 class="page-title" style="font-size:38px">Panneau de contrôle</h1>
+    </div>
+    <hr class="gold-rule">
 
-    <!-- Status -->
     <div class="status-bar">
       <div style="display:flex;align-items:center">
         <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">En attente</span>
+        <span id="status-text" style="color:var(--ink)">En attente</span>
       </div>
-      <span id="status-q" style="color:rgba(255,248,240,0.5)"></span>
+      <span id="status-q" style="color:rgba(43,38,32,0.5);font-size:12px"></span>
     </div>
 
-    <!-- Liste des questions -->
     <div class="section-title">Les 10 questions</div>
     <div id="questions-list"></div>
 
-    <!-- Barre de contrôle sticky -->
     <div class="control-bar">
-      <button class="btn btn-launch" id="btn-launch" style="flex:2">▶ Lancer</button>
+      <button class="btn btn-primary btn-gold" id="btn-launch" style="flex:2">▶ Lancer</button>
       <button class="btn btn-results" id="btn-results" style="flex:2" disabled>📊 Résultats</button>
-      <button class="btn btn-next" id="btn-next" style="flex:1" disabled>→ Suivante</button>
+      <button class="btn btn-next" id="btn-next" style="flex:1" disabled>→ Suiv.</button>
       <button class="btn btn-end" id="btn-end" style="flex:1" disabled>■ Fin</button>
     </div>
 
-    <div style="text-align:center;margin-top:12px">
+    <div style="text-align:center;margin-top:10px">
       <button class="btn btn-reset" id="btn-reset">🔄 Réinitialiser le jeu</button>
     </div>
   </div>

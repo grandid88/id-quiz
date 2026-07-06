@@ -1,21 +1,18 @@
 /* ==========================================================
    I&D QUIZ — variables.css
-   Charte romantique / tropicale
+   Charte ivoire / forêt / or (cohérente avec Horizon et Carnet de Bord)
 ========================================================== */
 
 :root {
   /* Couleurs principales */
-  --rose:         #C2185B;
-  --rose-dark:    #880E4F;
-  --rose-soft:    #F8BBD0;
-  --coral:        #E8735A;
-  --coral-light:  #FFAB91;
-  --gold:         #D4AF37;
-  --gold-light:   #F0D060;
-  --ivory:        #FFF8F0;
-  --ivory-soft:   #FFF0E6;
-  --plum:         #2D1030;
-  --ink:          #1A0A1E;
+  --ivory-main:   #F6EAD7;
+  --ivory-soft:   #FBF4E9;
+  --forest:       #3D6B4F;
+  --forest-dark:  #2A4A37;
+  --gold:         #C9A84C;
+  --gold-light:   #E0C77A;
+  --terracotta:   #C4704A;
+  --ink:          #2B2620;
 
   /* Boutons VRAI / FAUX */
   --vrai:         #2E7D32;
@@ -25,11 +22,11 @@
 
   /* Typographie */
   --display-font: 'Cormorant Garamond', serif;
-  --text-font:    'Poppins', sans-serif;
+  --script-font:  'Great Vibes', cursive;
+  --text-font:    'Segoe UI', system-ui, sans-serif;
 
   /* Effets */
   --radius-soft:  18px;
   --radius-pill:  50px;
-  --shadow-card:  0 8px 32px rgba(136, 14, 79, 0.15);
-  --shadow-glow:  0 0 24px rgba(212, 175, 55, 0.3);
+  --shadow-card:  0 8px 24px rgba(43, 38, 32, 0.12);
 }
