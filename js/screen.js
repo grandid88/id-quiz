@@ -106,7 +106,8 @@ async function showResults(qIdx) {
   const badge = document.getElementById('sr-answer-badge');
   badge.textContent = q.answer ? '✅  VRAI' : '❌  FAUX';
   badge.className   = `answer-revealed ${q.answer ? 'vrai' : 'faux'}`;
-  document.getElementById('sr-q-text').textContent = q.text;
+  document.getElementById('sr-q-text').textContent    = q.text;
+  document.getElementById('sr-q-comment').textContent = q.comment || '';
 
   // Lire toutes les réponses
   const snap = await db.ref(`quiz/responses/q${qIdx}`).get();

@@ -147,7 +147,20 @@
     color: rgba(255,248,240,0.7);
     text-align: center;
     line-height: 1.4;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
+  }
+  .q-comment {
+    font-family: var(--display-font);
+    font-size: 22px;
+    font-style: italic;
+    color: var(--gold);
+    text-align: center;
+    line-height: 1.4;
+    padding: 12px 20px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 14px;
+    background: rgba(201,168,76,0.07);
+    margin-bottom: 28px;
   }
 
   /* Podium top 3 */
@@ -293,6 +306,7 @@
       <div class="results-answer-block">
         <div class="answer-revealed" id="sr-answer-badge"></div>
         <div class="q-text-small" id="sr-q-text"></div>
+        <div class="q-comment" id="sr-q-comment"></div>
       </div>
       <div class="podium-title">⚡ Les 3 tables les plus rapides</div>
       <div class="podium" id="sr-podium"></div>

@@ -40,20 +40,81 @@ const TABLES = [
   { id: "Mayotte",           emoji: "🐢" }
 ];
 
-/* ── Questions pré-enregistrées ─────────────────────────── */
-/* Format : { text: "affirmation", answer: true | false }    */
+/* ── Questions ──────────────────────────────────────────── */
 const QUESTIONS = [
-  { text: "Isabelle et Didier se sont rencontrés un vendredi 13.", answer: false },
-  { text: "Isabelle a fait ses études à Paris.", answer: true },
-  { text: "Didier a demandé Isabelle en mariage lors d'un voyage à l'étranger.", answer: true },
-  { text: "Isabelle est l'aînée de sa fratrie.", answer: false },
-  { text: "Didier sait jouer d'un instrument de musique.", answer: true },
-  { text: "Ils ont adopté un animal de compagnie ensemble.", answer: false },
-  { text: "Le premier voyage en amoureux d'Isabelle & Didier était en Italie.", answer: true },
-  { text: "Isabelle déteste le chocolat.", answer: false },
-  { text: "Didier a déjà sauté en parachute.", answer: true },
-  { text: "Isabelle & Didier prévoient leur lune de miel à l'Île Maurice.", answer: true },
+  {
+    text:    "Isabelle a été dauphine d'un concours de miss !",
+    answer:  true,
+    comment: "Dans sa jeunesse !"
+  },
+  {
+    text:    "Didier a participé à une action de la brigade des sapeurs-pompiers de Paris !",
+    answer:  true,
+    comment: "En tant qu'arbitre officiel dans un tournoi de handball interarmées — 1989 !"
+  },
+  {
+    text:    "Didier a été responsable d'un groupe de filles !",
+    answer:  true,
+    comment: "En tant qu'entraîneur de handball — 1988-1990 !"
+  },
+  {
+    text:    "Isabelle et Didier ont travaillé tous les deux dans le même hypermarché !",
+    answer:  false,
+    comment: "Ils ont tous les deux travaillé dans la grande distribution, mais pas dans la même enseigne !"
+  },
+  {
+    text:    "Isabelle a fait l'objet d'un article dans le journal local !",
+    answer:  true,
+    comment: "Pour la création d'Isa Perm' Makup !"
+  },
+  {
+    text:    "Isabelle & Didier ont été entendus dans le cadre d'une enquête policière !",
+    answer:  true,
+    comment: "En 2020, ils ont trouvé par hasard près de chez eux des objets appartenant à une personne recherchée !"
+  },
+  {
+    text:    "Didier a été champion de tennis de table avant de pratiquer le handball !",
+    answer:  false,
+    comment: "Non, c'est son frère Jean-Luc !"
+  },
+  {
+    text:    "Isabelle a été championne de twirling-bâton dans sa jeunesse !",
+    answer:  false,
+    comment: "Ce sont ses filles Amélie et Lucie !"
+  },
+  {
+    text:    "Isabelle a nagé avec des tortues de mer !",
+    answer:  true,
+    comment: "Martinique 2022 !"
+  },
+  {
+    text:    "Didier a hissé les voiles d'un bateau !",
+    answer:  true,
+    comment: "Martinique 2022 !"
+  },
+  {
+    text:    "Isabelle et Didier ont rencontré le vrai Mac Donald !",
+    answer:  true,
+    comment: "Lors d'un trajet pour un mariage (Loïc & Lucie) en 2018 !"
+  },
+  {
+    text:    "Didier adore la noix de coco !",
+    answer:  false,
+    comment: "C'est même son fruit exotique le plus détesté !"
+  },
+  {
+    text:    "Isabelle a participé à un jeu télé !",
+    answer:  false,
+    comment: "Didier non plus !"
+  },
+  {
+    text:    "Didier a déjà conduit un bateau !",
+    answer:  true,
+    comment: "Martinique 2022… mauvais souvenir !"
+  },
+  {
+    text:    "Isabelle & Didier ont participé ensemble à une course à pied !",
+    answer:  false,
+    comment: "Isabelle seulement !"
+  },
 ];
-
-/* ⚠️ Mets à jour ces questions avec les vraies réponses
-   avant le mariage, directement dans ce fichier. */
