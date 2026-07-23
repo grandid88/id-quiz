@@ -50,10 +50,10 @@ const QUESTIONS = [
   {
     text:    "Didier a participé à une action de la brigade des sapeurs-pompiers de Paris !",
     answer:  true,
-    comment: "En tant qu'arbitre officiel dans un tournoi de handball interarmées — 1989 !"
+    comment: "En 1989, en tant qu'arbitre officiel dans un tournoi de handball interarmées à Bourges"
   },
   {
-    text:    "Didier a été responsable d'un groupe de filles !",
+    text:    "Didier a été à la tête d'un groupe de filles !",
     answer:  true,
     comment: "En tant qu'entraîneur de handball — 1988-1990 !"
   },
@@ -65,7 +65,7 @@ const QUESTIONS = [
   {
     text:    "Isabelle a fait l'objet d'un article dans le journal local !",
     answer:  true,
-    comment: "Pour la création d'Isa Perm' Makup !"
+    comment: "Pour la création de son aut-entreprise : Isa Perm' Makup !"
   },
   {
     text:    "Isabelle & Didier ont été entendus dans le cadre d'une enquête policière !",
@@ -105,12 +105,12 @@ const QUESTIONS = [
   {
     text:    "Isabelle a participé à un jeu télé !",
     answer:  false,
-    comment: "Didier non plus !"
+    comment: "Jamais ! Et Didier non plus !"
   },
   {
-    text:    "Didier a déjà conduit un bateau !",
+    text:    "Didier a connu les tranchées de Verdun !",
     answer:  true,
-    comment: "Martinique 2022… mauvais souvenir !"
+    comment: "De 1987 à 1988, pendant son service militaire."
   },
   {
     text:    "Isabelle & Didier ont participé ensemble à une course à pied !",
