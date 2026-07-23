@@ -28,8 +28,11 @@ function listenPlayers() {
   db.ref('quiz/players').on('value', snap => {
     const data = snap.val() || {};
     const players = Object.values(data)
-      .filter(p => p.score !== undefined && !p.answers) // uniquement scores finaux
-      .sort((a, b) => b.score - a.score);
+      .filter(p => p.timeScore !== undefined)
+      .sort((a, b) => {
+        if (b.correctCount !== a.correctCount) return b.correctCount - a.correctCount;
+        return a.timeScore - b.timeScore;
+      });
 
     // Mise à jour compteur
     document.getElementById('players-count').textContent =
@@ -45,7 +48,7 @@ function listenPlayers() {
       div.innerHTML = `
         <span class="mini-rank">${medals[i] || (i+1)}</span>
         <span class="mini-name">${escapeHtml(p.prenom)} — ${escapeHtml(p.table)}</span>
-        <span class="mini-score">${p.score} pts</span>`;
+        <span class="mini-score">${p.correctCount}/${QUESTIONS.length} · ${p.timeScore.toFixed(1)} pts</span>`;
       list.appendChild(div);
     });
   });

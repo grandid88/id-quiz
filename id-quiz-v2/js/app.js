@@ -23,7 +23,8 @@ const toast        = document.getElementById('toast');
 let player         = null;
 let playerKey      = null;
 let currentQIndex  = 0;
-let totalScore     = 0;
+let cumulativeTime = 0;   // cumul des temps des bonnes réponses (en secondes)
+let correctCount   = 0;   // nombre de bonnes réponses
 let timerInterval  = null;
 let questionStartTime = null;
 let hasAnswered    = false;
@@ -65,8 +66,9 @@ function showScreen(name) {
 
 /* ── Démarrage ───────────────────────────────────────── */
 function startGame() {
-  currentQIndex = 0;
-  totalScore    = 0;
+  currentQIndex  = 0;
+  cumulativeTime = 0;
+  correctCount   = 0;
   showQuestion(0);
 }
 
@@ -128,20 +130,24 @@ function submitAnswer(answer) {
   const elapsed = (Date.now() - questionStartTime) / 1000;
   const q       = QUESTIONS[currentQIndex];
   const correct = answer !== null && answer === q.answer;
-  const points  = correct ? calcPoints(elapsed) : 0;
-  totalScore   += points;
+
+  // Seules les bonnes réponses comptabilisent du temps
+  if (correct) {
+    cumulativeTime = Math.round((cumulativeTime + elapsed) * 10) / 10;
+    correctCount++;
+  }
 
   if (answer === true)  { btnVrai.classList.add('selected'); btnFaux.classList.add('dimmed'); }
   if (answer === false) { btnFaux.classList.add('selected'); btnVrai.classList.add('dimmed'); }
   btnVrai.disabled = true;
   btnFaux.disabled = true;
 
-  saveAnswerFirebase(currentQIndex, { correct, elapsed: Math.round(elapsed*10)/10, points });
-  setTimeout(() => showResultScreen(answer, correct, points, q), 350);
+  saveAnswerFirebase(currentQIndex, { correct, elapsed: Math.round(elapsed*10)/10 });
+  setTimeout(() => showResultScreen(answer, correct, elapsed, q), 350);
 }
 
 /* ── Écran résultat ───────────────────────────────────── */
-function showResultScreen(answer, correct, points, q) {
+function showResultScreen(answer, correct, elapsed, q) {
   const badge = document.getElementById('result-badge');
   badge.textContent = q.answer ? '✅  VRAI' : '❌  FAUX';
   badge.className   = `result-badge ${q.answer ? 'badge-vrai' : 'badge-faux'}`;
@@ -152,9 +158,17 @@ function showResultScreen(answer, correct, points, q) {
   labelEl.style.color = correct ? '#2E7D32' : '#C62828';
 
   document.getElementById('result-comment').textContent = q.comment || '';
-  document.getElementById('result-points').textContent    = `+${points}`;
-  document.getElementById('result-pts-label').textContent = `point${points !== 1 ? 's' : ''} gagnés`;
-  document.getElementById('result-total').textContent     = `Total : ${totalScore} pts`;
+
+  // Affichage points (1 seconde = 1 point, moins = mieux)
+  if (correct) {
+    document.getElementById('result-points').textContent    = elapsed.toFixed(1);
+    document.getElementById('result-pts-label').textContent = 'points pour cette affirmation';
+  } else {
+    document.getElementById('result-points').textContent    = '0';
+    document.getElementById('result-pts-label').textContent = '0 point comptabilisé';
+  }
+  document.getElementById('result-total').textContent =
+    `Total : ${cumulativeTime.toFixed(1)} pts (${correctCount}/${QUESTIONS.length} correctes)`;
 
   const isLast = currentQIndex >= QUESTIONS.length - 1;
   document.getElementById('btn-next-question').textContent =
@@ -174,13 +188,15 @@ document.getElementById('btn-next-question').addEventListener('click', () => {
 async function finishGame() {
   try {
     await db.ref(`quiz/players/${playerKey}`).set({
-      prenom:      player.prenom,
-      table:       player.table,
-      score:       totalScore,
-      completedAt: firebase.database.ServerValue.TIMESTAMP
+      prenom:        player.prenom,
+      table:         player.table,
+      timeScore:     cumulativeTime,  // plus petit = meilleur
+      correctCount:  correctCount,
+      completedAt:   firebase.database.ServerValue.TIMESTAMP
     });
   } catch (err) { console.error(err); }
-  document.getElementById('end-score').textContent = totalScore;
+  document.getElementById('end-score').textContent =
+    `${cumulativeTime.toFixed(1)} pts · ${correctCount}/${QUESTIONS.length}`;
   showScreen('end');
 }
 
