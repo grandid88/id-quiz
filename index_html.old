@@ -7,24 +7,14 @@
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <style>
-  .page { max-width: 420px; margin: 0 auto; padding: 24px 16px 64px; min-height: 100vh; }
-
-  /* Responsive petits écrans */
-  @media (max-width: 380px) {
-    .page { padding: 18px 12px 48px; }
-  }
+  .page { max-width: 420px; margin: 0 auto; padding: 36px 20px 64px; min-height: 100vh; }
 
   /* ── Grille des tables ─────────────────────────────────── */
   .tables-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
     margin-top: 10px;
-    width: 100%;
-  }
-  .table-option {
-    min-width: 0;
-    overflow: hidden;
   }
   .table-option input { display: none; }
   .table-option label {
@@ -32,21 +22,17 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding: 8px 2px;
-    border-radius: 10px;
+    padding: 10px 4px;
+    border-radius: 12px;
     border: 1.5px solid rgba(61,107,79,0.15);
     background: #fff;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: rgba(43,38,32,0.6);
     transition: all 0.2s;
-    width: 100%;
-    text-align: center;
-    word-break: break-word;
-    hyphens: auto;
   }
-  .table-option label .t-emoji { font-size: 18px; }
+  .table-option label .t-emoji { font-size: 20px; }
   .table-option input:checked + label {
     border-color: var(--gold);
     background: rgba(201,168,76,0.1);
@@ -232,7 +218,7 @@
 <div id="screen-register">
   <div class="page">
     <div class="page-header">
-      <div class="page-eyebrow">I&amp;D · 26 juin 2027</div>
+      <div class="page-eyebrow">Isabelle &amp; Didier · 26 juin 2027</div>
       <h1 class="page-title">I&D Quiz</h1>
       <p class="page-sub">Qui connaît le mieux les mariés ?</p>
     </div>
