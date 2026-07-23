@@ -40,10 +40,11 @@
     white-space: nowrap;
     overflow: hidden;
   }
-  /* Nouvelle-Calédonie : 2 lignes autorisées au tiret */
-  label[for="t-Nouvelle-Calédonie"] {
+  /* Nouvelle-Calédonie : sélecteur partiel sans accent — 2 lignes au tiret */
+  .table-option label[for^="t-Nouv"] {
     white-space: normal;
-    word-break: keep-all;
+    word-break: normal;
+    overflow: visible;
   }
   .table-option label .t-emoji { font-size: 18px; }
   .table-option input:checked + label {
