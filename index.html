@@ -7,12 +7,7 @@
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <style>
-  .page { max-width: 420px; margin: 0 auto; padding: 24px 16px 64px; min-height: 100vh; }
-
-  /* Responsive petits écrans */
-  @media (max-width: 380px) {
-    .page { padding: 18px 12px 48px; }
-  }
+  .page { max-width: 420px; margin: 0 auto; padding: 36px 20px 64px; min-height: 100vh; }
 
   /* ── Grille des tables ─────────────────────────────────── */
   .tables-grid {
@@ -22,10 +17,7 @@
     margin-top: 10px;
     width: 100%;
   }
-  .table-option {
-    min-width: 0;
-    overflow: hidden;
-  }
+  .table-option { min-width: 0; }
   .table-option input { display: none; }
   .table-option label {
     display: flex;
@@ -37,14 +29,21 @@
     border: 1.5px solid rgba(61,107,79,0.15);
     background: #fff;
     cursor: pointer;
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
     color: rgba(43,38,32,0.6);
     transition: all 0.2s;
     width: 100%;
     text-align: center;
-    word-break: break-word;
-    hyphens: auto;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  /* Nouvelle-Calédonie : 2 lignes autorisées au tiret */
+  label[for="t-Nouvelle-Calédonie"] {
+    white-space: normal;
+    word-break: keep-all;
   }
   .table-option label .t-emoji { font-size: 18px; }
   .table-option input:checked + label {
@@ -232,7 +231,7 @@
 <div id="screen-register">
   <div class="page">
     <div class="page-header">
-      <div class="page-eyebrow">I&amp;D · 26 juin 2027</div>
+      <div class="page-eyebrow">Isabelle &amp; Didier · 26 juin 2027</div>
       <h1 class="page-title">I&D Quiz</h1>
       <p class="page-sub">Qui connaît le mieux les mariés ?</p>
     </div>
