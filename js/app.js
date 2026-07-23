@@ -1,11 +1,9 @@
 /* ==========================================================
-   I&D QUIZ — app.js (interface invité)
+   I&D QUIZ — app.js v2 (joueur autonome, sans DJ)
 ========================================================== */
 
-/* ── Éléments DOM ─────────────────────────────────────────── */
 const screens = {
   register: document.getElementById('screen-register'),
-  wait:     document.getElementById('screen-wait'),
   game:     document.getElementById('screen-game'),
   result:   document.getElementById('screen-result'),
   end:      document.getElementById('screen-end'),
@@ -14,24 +12,23 @@ const screens = {
 const tablesGrid   = document.getElementById('tables-grid');
 const prenomInput  = document.getElementById('input-prenom');
 const btnRegister  = document.getElementById('btn-register');
-const waitPlayerInfo = document.getElementById('wait-player-info');
 const qNumber      = document.getElementById('q-number');
 const qText        = document.getElementById('q-text');
 const timerText    = document.getElementById('timer-text');
 const timerBar     = document.getElementById('timer-bar');
 const btnVrai      = document.getElementById('btn-vrai');
 const btnFaux      = document.getElementById('btn-faux');
-const answeredMsg  = document.getElementById('answered-msg');
 const toast        = document.getElementById('toast');
 
-/* ── État local ───────────────────────────────────────────── */
-let player = null;       // { prenom, table }
-let timerInterval = null;
+let player         = null;
+let playerKey      = null;
+let currentQIndex  = 0;
+let totalScore     = 0;
+let timerInterval  = null;
 let questionStartTime = null;
-let hasAnswered = false;
-let currentQIndex = -1;
+let hasAnswered    = false;
 
-/* ── Construction de la grille des tables ─────────────────── */
+/* ── Grille des tables ───────────────────────────────── */
 TABLES.forEach(t => {
   const div = document.createElement('div');
   div.className = 'table-option';
@@ -44,7 +41,7 @@ TABLES.forEach(t => {
   tablesGrid.appendChild(div);
 });
 
-/* ── Activation du bouton register ───────────────────────── */
+/* ── Activation bouton register ───────────────────────── */
 function checkReady() {
   const tableSelected = document.querySelector('input[name="table"]:checked');
   btnRegister.disabled = !(prenomInput.value.trim().length > 0 && tableSelected);
@@ -52,94 +49,56 @@ function checkReady() {
 prenomInput.addEventListener('input', checkReady);
 document.addEventListener('change', e => { if (e.target.name === 'table') checkReady(); });
 
-/* ── Enregistrement ───────────────────────────────────────── */
+/* ── Enregistrement → démarre immédiatement ──────────── */
 btnRegister.addEventListener('click', () => {
   const prenom = prenomInput.value.trim();
   const table  = document.querySelector('input[name="table"]:checked').value;
-  player = { prenom, table };
-  sessionStorage.setItem('idquiz_player', JSON.stringify(player));
-  showScreen('wait');
-  waitPlayerInfo.textContent = `${prenom} · Table ${table}`;
-  listenGame();
+  player    = { prenom, table };
+  playerKey = sanitizeKey(prenom) + '_' + sanitizeKey(table) + '_' + Date.now();
+  startGame();
 });
 
-/* Restaurer session si rechargement page */
-const saved = sessionStorage.getItem('idquiz_player');
-if (saved) {
-  player = JSON.parse(saved);
-  showScreen('wait');
-  waitPlayerInfo.textContent = `${player.prenom} · Table ${player.table}`;
-  listenGame();
-}
-
-/* ── Navigation entre écrans ─────────────────────────────── */
 function showScreen(name) {
   Object.values(screens).forEach(s => s.classList.add('hidden'));
   screens[name].classList.remove('hidden');
 }
 
-/* ── Écoute Firebase — état du jeu ──────────────────────── */
-function listenGame() {
-  db.ref('quiz/game').on('value', snap => {
-    const game = snap.val();
-    if (!game) return;
-
-    if (game.status === 'waiting') {
-      showScreen('wait');
-      clearTimer();
-    }
-    else if (game.status === 'question') {
-      const qIdx = game.currentQuestion;
-      if (qIdx !== currentQIndex) {
-        currentQIndex = qIdx;
-        hasAnswered = false;
-        questionStartTime = Date.now(); // ✅ horloge locale du téléphone
-        showQuestion(qIdx, questionStartTime);
-      }
-    }
-    else if (game.status === 'results') {
-      clearTimer();
-      showQuestionResult(game.currentQuestion);
-    }
-    else if (game.status === 'finished') {
-      clearTimer();
-      showScreen('end');
-    }
-  });
+/* ── Démarrage ───────────────────────────────────────── */
+function startGame() {
+  currentQIndex = 0;
+  totalScore    = 0;
+  showQuestion(0);
 }
 
-/* ── Affichage d'une question ────────────────────────────── */
-function showQuestion(qIdx, startTime) {
+/* ── Affichage question ───────────────────────────────── */
+function showQuestion(qIdx) {
   const q = QUESTIONS[qIdx];
-  if (!q) return;
+  if (!q) { finishGame(); return; }
 
-  qNumber.textContent = `Question ${qIdx + 1} / ${QUESTIONS.length}`;
-  qText.textContent = q.text;
+  qNumber.textContent = `Affirmation ${qIdx + 1} / ${QUESTIONS.length}`;
+  qText.textContent   = q.text;
 
   btnVrai.classList.remove('selected', 'dimmed');
   btnFaux.classList.remove('selected', 'dimmed');
   btnVrai.disabled = false;
   btnFaux.disabled = false;
-  answeredMsg.classList.add('hidden');
 
+  hasAnswered       = false;
+  questionStartTime = Date.now();
   showScreen('game');
-  startTimer(startTime);
+  startTimer(questionStartTime);
 }
 
-/* ── Timer ───────────────────────────────────────────────── */
-const CIRCUMFERENCE = 2 * Math.PI * 22; // r=22
+/* ── Timer ───────────────────────────────────────────── */
+const CIRCUMFERENCE = 2 * Math.PI * 22;
 
 function startTimer(startTimestamp) {
   clearTimer();
   function tick() {
-    const elapsed = (Date.now() - startTimestamp) / 1000;
+    const elapsed   = (Date.now() - startTimestamp) / 1000;
     const remaining = Math.max(0, TIMER_SEC - elapsed);
     timerText.textContent = Math.ceil(remaining);
-
-    const progress = remaining / TIMER_SEC;
-    timerBar.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
-
-    // Couleur d'alerte sur les 10 dernières secondes
+    timerBar.style.strokeDashoffset = CIRCUMFERENCE * (1 - remaining / TIMER_SEC);
     if (remaining <= 10) {
       timerBar.style.stroke = 'var(--terracotta)';
       timerText.style.color = 'var(--terracotta)';
@@ -147,16 +106,7 @@ function startTimer(startTimestamp) {
       timerBar.style.stroke = 'var(--gold)';
       timerText.style.color = 'var(--gold)';
     }
-
-    if (remaining <= 0) {
-      clearTimer();
-      if (!hasAnswered) {
-        btnVrai.disabled = true;
-        btnFaux.disabled = true;
-        answeredMsg.textContent = "Temps écoulé !";
-        answeredMsg.classList.remove('hidden');
-      }
-    }
+    if (remaining <= 0) { clearTimer(); if (!hasAnswered) submitAnswer(null); }
   }
   tick();
   timerInterval = setInterval(tick, 250);
@@ -166,85 +116,80 @@ function clearTimer() {
   if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 }
 
-/* ── Réponse invité ──────────────────────────────────────── */
+/* ── Réponse ─────────────────────────────────────────── */
 btnVrai.addEventListener('click', () => submitAnswer(true));
 btnFaux.addEventListener('click', () => submitAnswer(false));
 
-async function submitAnswer(answer) {
+function submitAnswer(answer) {
   if (hasAnswered) return;
   hasAnswered = true;
+  clearTimer();
 
   const elapsed = (Date.now() - questionStartTime) / 1000;
+  const q       = QUESTIONS[currentQIndex];
+  const correct = answer !== null && answer === q.answer;
+  const points  = correct ? calcPoints(elapsed) : 0;
+  totalScore   += points;
 
-  btnVrai.classList.toggle('selected', answer === true);
-  btnFaux.classList.toggle('selected', answer === false);
-  btnVrai.classList.toggle('dimmed', answer !== true);
-  btnFaux.classList.toggle('dimmed', answer !== false);
+  if (answer === true)  { btnVrai.classList.add('selected'); btnFaux.classList.add('dimmed'); }
+  if (answer === false) { btnFaux.classList.add('selected'); btnVrai.classList.add('dimmed'); }
   btnVrai.disabled = true;
   btnFaux.disabled = true;
-  answeredMsg.classList.remove('hidden');
-  answeredMsg.textContent = "Réponse enregistrée — en attente des résultats…";
 
-  // Enregistrer la réponse dans Firebase
-  const points = QUESTIONS[currentQIndex].answer === answer ? calcPoints(elapsed) : 0;
-  const refPath = `quiz/responses/q${currentQIndex}/${sanitizeKey(player.table)}/${sanitizeKey(player.prenom + '_' + Date.now())}`;
-
-  try {
-    await db.ref(refPath).set({
-      prenom:   player.prenom,
-      table:    player.table,
-      answer:   answer,
-      correct:  QUESTIONS[currentQIndex].answer === answer,
-      points:   points,
-      elapsed:  Math.round(elapsed * 10) / 10,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
-
-    // Ajouter les points au score de la table
-    if (points > 0) {
-      await db.ref(`quiz/scores/${sanitizeKey(player.table)}`).transaction(cur => (cur || 0) + points);
-    }
-  } catch (err) {
-    console.error(err);
-  }
+  saveAnswerFirebase(currentQIndex, { correct, elapsed: Math.round(elapsed*10)/10, points });
+  setTimeout(() => showResultScreen(answer, correct, points, q), 350);
 }
 
-/* ── Résultat après question ─────────────────────────────── */
-async function showQuestionResult(qIdx) {
-  const q = QUESTIONS[qIdx];
-  const myAnswer = hasAnswered
-    ? (btnVrai.classList.contains('selected') ? true
-      : btnFaux.classList.contains('selected') ? false : null)
-    : null;
+/* ── Écran résultat ───────────────────────────────────── */
+function showResultScreen(answer, correct, points, q) {
+  const badge = document.getElementById('result-badge');
+  badge.textContent = q.answer ? '✅  VRAI' : '❌  FAUX';
+  badge.className   = `result-badge ${q.answer ? 'badge-vrai' : 'badge-faux'}`;
 
-  const correct = myAnswer !== null && myAnswer === q.answer;
-  const elapsed = questionStartTime
-    ? (Date.now() - questionStartTime) / 1000
-    : TIMER_SEC + 1;
-  const pts = correct ? calcPoints(elapsed) : 0;
+  document.getElementById('result-icon').textContent = correct ? '🎉' : '😢';
+  const labelEl = document.getElementById('result-label');
+  labelEl.textContent = correct ? 'Bonne réponse !' : answer === null ? 'Temps écoulé !' : 'Mauvaise réponse…';
+  labelEl.style.color = correct ? '#2E7D32' : '#C62828';
 
-  document.getElementById('result-icon').textContent   = correct ? '🎉' : '😢';
-  document.getElementById('result-label').textContent  = correct ? 'Bonne réponse !' : 'Mauvaise réponse…';
-  document.getElementById('result-label').style.color  = correct ? 'var(--vrai-light)' : 'var(--faux-light)';
-  document.getElementById('result-points').textContent = `+${pts}`;
-  document.getElementById('result-pts-label').textContent = `point${pts !== 1 ? 's' : ''} gagnés`;
+  document.getElementById('result-comment').textContent = q.comment || '';
+  document.getElementById('result-points').textContent    = `+${points}`;
+  document.getElementById('result-pts-label').textContent = `point${points !== 1 ? 's' : ''} gagnés`;
+  document.getElementById('result-total').textContent     = `Total : ${totalScore} pts`;
 
-  // Score total de la table
-  const scoreSnap = await db.ref(`quiz/scores/${sanitizeKey(player.table)}`).get();
-  const tableScore = scoreSnap.val() || 0;
-  document.getElementById('result-table-score').textContent =
-    `Table ${player.table} : ${tableScore} pts au total`;
+  const isLast = currentQIndex >= QUESTIONS.length - 1;
+  document.getElementById('btn-next-question').textContent =
+    isLast ? '🏆 Voir mon score final' : 'Affirmation suivante →';
 
   showScreen('result');
 }
 
-/* ── Utilitaire ───────────────────────────────────────────── */
-function sanitizeKey(str) {
-  return str.replace(/[.#$\[\]/]/g, '_');
+/* ── Bouton suivant ───────────────────────────────────── */
+document.getElementById('btn-next-question').addEventListener('click', () => {
+  currentQIndex++;
+  if (currentQIndex >= QUESTIONS.length) finishGame();
+  else showQuestion(currentQIndex);
+});
+
+/* ── Fin du jeu ───────────────────────────────────────── */
+async function finishGame() {
+  try {
+    await db.ref(`quiz/players/${playerKey}`).set({
+      prenom:      player.prenom,
+      table:       player.table,
+      score:       totalScore,
+      completedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+  } catch (err) { console.error(err); }
+  document.getElementById('end-score').textContent = totalScore;
+  showScreen('end');
 }
 
-function showToast(msg) {
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+async function saveAnswerFirebase(qIdx, data) {
+  try {
+    await db.ref(`quiz/players/${playerKey}/answers/q${qIdx}`).set(data);
+  } catch (err) { console.error(err); }
+}
+
+function sanitizeKey(str) {
+  return str.replace(/[.#$\[\]/\s]/g, '_');
 }
