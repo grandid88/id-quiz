@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
 <style>
-  .page { max-width: 420px; margin: 0 auto; padding: 36px 20px 64px; min-height: 100vh; }
+  .page { max-width: 420px; margin: 0 auto; padding: 24px 16px 64px; min-height: 100vh; }
+  @media (max-width: 380px) { .page { padding: 18px 12px 48px; } }
 
   /* ── Grille des tables ─────────────────────────────────── */
   .tables-grid {
@@ -40,7 +41,6 @@
     white-space: nowrap;
     overflow: hidden;
   }
-  /* Nouvelle-Calédonie : sélecteur partiel sans accent — 2 lignes au tiret */
   .table-option label[for^="t-Nouv"] {
     white-space: normal;
     word-break: normal;
@@ -52,36 +52,6 @@
     background: rgba(201,168,76,0.1);
     color: var(--forest-dark);
     box-shadow: 0 2px 10px rgba(201,168,76,0.2);
-  }
-
-  /* ── Écran d'attente ───────────────────────────────────── */
-  #screen-wait {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 32px 24px;
-  }
-  .wait-icon { font-size: 64px; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-  .wait-title {
-    font-family: var(--script-font);
-    font-size: 42px;
-    color: var(--forest-dark);
-    margin-bottom: 8px;
-  }
-  .wait-sub { font-family: var(--display-font); font-size: 17px; color: var(--ink); opacity: 0.65; line-height: 1.5; }
-  .wait-player {
-    margin-top: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--forest);
-    padding: 8px 18px;
-    border: 1px solid rgba(61,107,79,0.2);
-    border-radius: var(--radius-pill);
-    background: rgba(61,107,79,0.05);
   }
 
   /* ── Écran de jeu ──────────────────────────────────────── */
@@ -108,8 +78,6 @@
     color: var(--forest);
     font-weight: 600;
   }
-
-  /* Timer circulaire */
   .timer-wrap { position: relative; width: 56px; height: 56px; }
   .timer-wrap svg { transform: rotate(-90deg); }
   .timer-track { fill: none; stroke: rgba(61,107,79,0.15); stroke-width: 4; }
@@ -124,7 +92,6 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; font-weight: 700; color: var(--gold);
   }
-
   .q-text {
     flex: 1;
     display: flex;
@@ -139,8 +106,6 @@
     padding: 12px 0;
     overflow: hidden;
   }
-
-  /* Boutons VRAI / FAUX */
   .answer-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -163,53 +128,75 @@
     justify-content: center;
     gap: 4px;
   }
-  .btn-vrai {
-    background: linear-gradient(135deg, #2E7D32, #43A047);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(46,125,50,0.3);
-  }
-  .btn-faux {
-    background: linear-gradient(135deg, #C62828, #E53935);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(198,40,40,0.3);
-  }
+  .btn-vrai { background: linear-gradient(135deg,#2E7D32,#43A047); color:#fff; box-shadow:0 6px 20px rgba(46,125,50,.3); }
+  .btn-faux { background: linear-gradient(135deg,#C62828,#E53935); color:#fff; box-shadow:0 6px 20px rgba(198,40,40,.3); }
   .btn-vrai:hover { transform: translateY(-3px); }
   .btn-faux:hover { transform: translateY(-3px); }
   .btn-icon { font-size: 28px; line-height: 1; }
   .btn-vrai.selected, .btn-faux.selected { transform: scale(1.05); filter: brightness(1.1); }
   .btn-vrai.dimmed, .btn-faux.dimmed { opacity: 0.3; pointer-events: none; }
-  .answered-msg {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 14px;
-    color: var(--forest);
-    font-style: italic;
-  }
 
-  /* ── Résultat question ─────────────────────────────────── */
+  /* ── Écran résultat ────────────────────────────────────── */
   #screen-result {
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 32px 24px;
+    padding: 28px 24px 40px;
+    max-width: 420px;
+    margin: 0 auto;
+    gap: 0;
   }
-  .result-icon { font-size: 72px; margin-bottom: 12px; }
-  .result-label {
+
+  /* Badge réponse correcte */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .badge-vrai { background: rgba(46,125,50,.12); color:#2E7D32; border: 1.5px solid rgba(46,125,50,.3); }
+  .badge-faux { background: rgba(198,40,40,.12); color:#C62828; border: 1.5px solid rgba(198,40,40,.3); }
+
+  .result-icon { font-size: 52px; margin-bottom: 8px; }
+  .result-label { font-family: var(--display-font); font-size: 26px; font-weight: 700; margin-bottom: 14px; }
+
+  /* Commentaire */
+  .result-comment {
     font-family: var(--display-font);
-    font-size: 30px; font-weight: 700; margin-bottom: 6px;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink);
+    opacity: 0.75;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    padding: 12px 16px;
+    background: rgba(61,107,79,0.05);
+    border-radius: 12px;
+    border-left: 3px solid var(--gold);
+    text-align: left;
+    width: 100%;
   }
-  .result-points { font-size: 52px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
-  .result-pts-label { font-size: 13px; color: rgba(43,38,32,0.55); margin-bottom: 20px; }
-  .result-table-score {
-    font-size: 14px; color: var(--forest); font-weight: 600;
-    padding: 10px 20px;
+
+  /* Points */
+  .result-points { font-size: 44px; font-weight: 800; color: var(--gold); margin-bottom: 2px; }
+  .result-pts-label { font-size: 12px; color: rgba(43,38,32,0.5); margin-bottom: 8px; }
+  .result-total {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--forest);
+    padding: 8px 18px;
     border: 1px solid rgba(61,107,79,0.2);
     border-radius: var(--radius-pill);
-    background: rgba(61,107,79,0.06);
-    margin-bottom: 20px;
+    background: rgba(61,107,79,0.05);
+    margin-bottom: 24px;
   }
 
   /* ── Fin de jeu ────────────────────────────────────────── */
@@ -224,6 +211,15 @@
   }
   .end-icon { font-size: 64px; margin-bottom: 16px; }
   .end-title { font-family: var(--script-font); font-size: 48px; color: var(--forest-dark); margin-bottom: 8px; }
+  .end-score-wrap {
+    margin: 16px 0 24px;
+    padding: 16px 32px;
+    background: rgba(201,168,76,0.1);
+    border: 1.5px solid var(--gold);
+    border-radius: 18px;
+  }
+  .end-score { font-size: 56px; font-weight: 800; color: var(--gold); line-height: 1; }
+  .end-score-label { font-size: 13px; color: rgba(43,38,32,0.55); margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -232,7 +228,7 @@
 <div id="screen-register">
   <div class="page">
     <div class="page-header">
-      <div class="page-eyebrow">Isabelle &amp; Didier · 26 juin 2027</div>
+      <div class="page-eyebrow">I&amp;D · 26 juin 2027</div>
       <h1 class="page-title">I&D Quiz</h1>
       <p class="page-sub">Qui connaît le mieux les mariés ?</p>
     </div>
@@ -254,18 +250,10 @@
   </div>
 </div>
 
-<!-- ATTENTE -->
-<div id="screen-wait" class="hidden">
-  <div class="wait-icon">🎯</div>
-  <h1 class="wait-title">En attente…</h1>
-  <p class="wait-sub">Le DJ va bientôt lancer<br>la prochaine question !</p>
-  <div class="wait-player" id="wait-player-info"></div>
-</div>
-
 <!-- QUESTION -->
 <div id="screen-game" class="hidden">
   <div class="game-header">
-    <div class="q-number" id="q-number">Question 1 / 10</div>
+    <div class="q-number" id="q-number">Affirmation 1 / 15</div>
     <div class="timer-wrap">
       <svg width="56" height="56" viewBox="0 0 48 48">
         <circle class="timer-track" cx="24" cy="24" r="22"/>
@@ -283,28 +271,33 @@
       <span class="btn-icon">❌</span>FAUX
     </button>
   </div>
-  <div class="answered-msg hidden" id="answered-msg">Réponse enregistrée — en attente des résultats…</div>
 </div>
 
 <!-- RÉSULTAT -->
 <div id="screen-result" class="hidden">
+  <div class="result-badge" id="result-badge">✅ VRAI</div>
   <div class="result-icon" id="result-icon"></div>
   <div class="result-label" id="result-label"></div>
+  <div class="result-comment" id="result-comment"></div>
   <div class="result-points" id="result-points"></div>
   <div class="result-pts-label" id="result-pts-label"></div>
-  <div class="result-table-score" id="result-table-score"></div>
-  <p style="font-family:var(--display-font);font-size:16px;color:rgba(43,38,32,0.6)">
-    Préparez-vous pour la prochaine question…
-  </p>
+  <div class="result-total" id="result-total"></div>
+  <button class="btn btn-primary btn-block" id="btn-next-question">
+    Affirmation suivante →
+  </button>
 </div>
 
 <!-- FIN -->
 <div id="screen-end" class="hidden">
   <div class="end-icon">🏆</div>
-  <div class="end-title">Quiz terminé !</div>
-  <hr class="gold-rule" style="width:120px">
+  <div class="end-title">Bravo !</div>
+  <hr class="gold-rule" style="width:120px;margin:8px auto 16px">
+  <div class="end-score-wrap">
+    <div class="end-score" id="end-score">0</div>
+    <div class="end-score-label">points sur 1500</div>
+  </div>
   <p style="font-family:var(--display-font);font-size:17px;color:rgba(43,38,32,0.65);line-height:1.6">
-    Merci d'avoir joué !<br>Regardez l'écran pour découvrir<br>le classement final.
+    Regardez l'écran pour découvrir<br>le classement final ! 🎯
   </p>
 </div>
 
