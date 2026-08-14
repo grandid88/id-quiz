@@ -123,12 +123,6 @@ async function showQuestion(qIdx) {
     if (token !== questionToken) return;
     questionStartTime = Number(result.data.startedAt);
 
-    console.log("=== DIAGNOSTIC CHRONO ===");
-    console.log("Date.now() :", Date.now());
-    console.log("startedAt :", result.data.startedAt);
-    console.log("écart en secondes :", ((Date.now() - Number(result.data.startedAt)) / 1000).toFixed(3));
-    console.log("=========================");
-
     btnVrai.disabled = false;
     btnFaux.disabled = false;
     startTimer(result.data.startedAt);
@@ -291,5 +285,6 @@ async function finishGame() {
     btnRegister.disabled = true;
   }
 })();
+
 
 
