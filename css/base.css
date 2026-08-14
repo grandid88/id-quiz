@@ -1,12 +1,22 @@
 /* ==========================================================
    I&D QUIZ — base.css
-========================================================== */
+   Identité graphique mariage Isabelle & Didier
+   ========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap");
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ==========================================================
+   RESET & BASE
+   ========================================================== */
 
-html, body {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
   width: 100%;
   min-height: 100%;
   background: var(--ivory-main);
@@ -16,154 +26,814 @@ html, body {
 }
 
 body {
-  background-image:
-    radial-gradient(circle at 10% 10%, rgba(201,168,76,0.08), transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(61,107,79,0.08), transparent 40%);
+  position: relative;
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(circle at 8% 8%, rgba(201, 164, 92, 0.1), transparent 32%),
+    radial-gradient(
+      circle at 92% 88%,
+      rgba(95, 120, 107, 0.1),
+      transparent 34%
+    ),
+    linear-gradient(135deg, var(--ivory) 0%, var(--cream) 100%);
 }
 
-/* Carte */
+/* ==========================================================
+   ÉLÉMENTS DÉCORATIFS DE FOND
+   ========================================================== */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.045;
+}
+
+body::before {
+  width: 260px;
+  height: 260px;
+  top: -90px;
+  left: -90px;
+
+  border: 1px solid var(--forest);
+  border-radius: 50%;
+}
+
+body::after {
+  width: 220px;
+  height: 220px;
+  right: -80px;
+  bottom: -80px;
+
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+}
+
+/* ==========================================================
+   CARTE PRINCIPALE
+   ========================================================== */
+
 .card {
-  background: var(--ivory-soft);
-  border: 1px solid rgba(61,107,79,0.1);
-  border-radius: var(--radius-soft);
-  box-shadow: var(--shadow-card);
-  padding: 24px;
+  position: relative;
+
+  /* Panneau ivoire premium */
+  background: linear-gradient(
+    145deg,
+    rgba(255, 253, 247, 0.97),
+    rgba(247, 242, 231, 0.97)
+  );
+
+  border: 1px solid rgba(201, 168, 76, 0.55);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow:
+    0 18px 45px rgba(43, 38, 32, 0.18),
+    0 4px 12px rgba(43, 38, 32, 0.08);
+
+  padding: 28px 24px;
+
+  overflow: hidden;
 }
 
-/* Boutons */
+/* Filet décoratif supérieur */
+
+.card::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+
+  height: 2px;
+
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+
+  opacity: 0.75;
+}
+
+/* ==========================================================
+   BOUTONS
+   ========================================================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
+
+  min-height: 48px;
+
   padding: 13px 28px;
+
   border-radius: var(--radius-pill);
+
   font-family: var(--text-font);
   font-size: 15px;
   font-weight: 600;
+
+  letter-spacing: 0.2px;
+
   border: none;
+
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-normal),
+    background var(--transition-normal),
+    opacity var(--transition-fast);
+
+  -webkit-tap-highlight-color: transparent;
 }
-.btn:hover  { transform: translateY(-1px); }
-.btn:active { transform: scale(0.97); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.btn-block  { width: 100%; }
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Bouton principal */
 
 .btn-primary {
-  background: var(--forest);
-  color: var(--ivory-soft);
-  box-shadow: 0 4px 16px rgba(61,107,79,0.25);
+  position: relative;
+
+  background: linear-gradient(135deg, var(--forest), var(--forest-dark));
+
+  color: var(--ivory);
+
+  border: 1px solid rgba(227, 204, 150, 0.45);
+
+  box-shadow:
+    0 8px 20px rgba(28, 52, 43, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
-.btn-primary:hover { background: var(--forest-dark); }
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--forest-light), var(--forest));
+
+  box-shadow:
+    0 11px 26px rgba(28, 52, 43, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Bouton or */
 
 .btn-gold {
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--gold), #b68f46);
+
   color: var(--ink);
-  box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  box-shadow: 0 8px 20px rgba(201, 164, 92, 0.25);
 }
-.btn-gold:hover { background: var(--gold-light); }
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+}
+
+/* Bouton contour */
 
 .btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--forest);
-  color: var(--forest);
-}
-.btn-outline:hover { background: rgba(61,107,79,0.06); }
+  background: rgba(255, 255, 255, 0.28);
 
-/* Champs de formulaire */
-.field { margin-bottom: 18px; }
+  border: 1.5px solid var(--forest);
+
+  color: var(--forest);
+
+  box-shadow: 0 4px 12px rgba(43, 38, 32, 0.04);
+}
+
+.btn-outline:hover {
+  background: var(--sage-light);
+
+  box-shadow: 0 6px 16px rgba(43, 38, 32, 0.08);
+}
+
+/* ==========================================================
+   CHAMPS DE FORMULAIRE
+   ========================================================== */
+
+.field {
+  margin-bottom: 20px;
+}
+
 .field label {
   display: block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2.2px;
   text-transform: uppercase;
+
   color: var(--forest);
+
   margin-bottom: 8px;
 }
+
 .field input[type="text"],
 .field input[type="password"],
 .field select {
   width: 100%;
-  padding: 13px 16px;
-  background: #fff;
-  border: 1.5px solid rgba(61,107,79,0.2);
-  border-radius: 12px;
+
+  padding: 14px 16px;
+
+  background: rgba(255, 255, 255, 0.76);
+
+  border: 1.5px solid rgba(40, 70, 58, 0.18);
+
+  border-radius: var(--radius-md);
+
   color: var(--ink);
+
   font-family: var(--text-font);
-  font-size: 15px;
-}
-.field input:focus, .field select:focus {
-  outline: none;
-  border-color: var(--gold);
-}
-
-/* En-tête commun */
-.page-header {
-  text-align: center;
-  margin-bottom: 28px;
-}
-.page-eyebrow {
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--forest);
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.page-title {
-  font-family: var(--script-font);
-  font-size: 52px;
-  color: var(--forest-dark);
-  font-weight: 400;
-  line-height: 1.1;
-}
-.page-sub {
-  font-family: var(--display-font);
   font-size: 16px;
-  color: var(--ink);
-  opacity: 0.7;
-  margin-top: 6px;
+
+  outline: none;
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-/* Ligne dorée */
+.field input::placeholder {
+  color: var(--ink-faint);
+}
+
+.field input:hover,
+.field select:hover {
+  border-color: rgba(201, 164, 92, 0.55);
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--gold);
+
+  background: rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 0 0 3px rgba(201, 164, 92, 0.12),
+    0 5px 14px rgba(43, 38, 32, 0.06);
+}
+
+/* ==========================================================
+   EN-TÊTE COMMUN
+   ========================================================== */
+
+/* ==========================================================
+   I&D QUIZ — HEADER ÉCRAN D'ACCUEIL
+   ========================================================== */
+
+/* ==========================================================
+   I&D QUIZ — HEADER PREMIUM
+   ========================================================== */
+
+.page-header {
+  position: relative;
+  text-align: center;
+
+  margin: 0 0 18px;
+  padding: 12px 18px 14px;
+
+  /* Voile très léger pour détacher le texte du décor */
+  background: rgba(255, 249, 235, 0.28);
+
+  border-radius: 30px;
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+
+  box-shadow: 0 8px 24px rgba(38, 54, 43, 0.08);
+}
+
+/* ── Date ─────────────────────────────────────────────── */
+
+.page-eyebrow {
+  margin: 0 0 10px;
+
+  font-size: 11px;
+  line-height: 1;
+
+  letter-spacing: 4px;
+  text-transform: uppercase;
+
+  color: #173d2f;
+
+  font-weight: 700;
+
+  text-shadow: 0 1px 3px rgba(255, 249, 235, 0.95);
+}
+
+/* ── Titre principal ──────────────────────────────────── */
+
+.page-title {
+  margin: 0;
+
+  /*
+     On conserve la police script du projet,
+     mais on donne davantage d'espace au titre
+     pour éviter que I&D ne se mélange avec la date.
+  */
+  font-family: var(--script-font);
+
+  font-size: clamp(50px, 13vw, 64px);
+
+  font-weight: 400;
+
+  line-height: 1.08;
+
+  color: #143b2d;
+
+  letter-spacing: 0.5px;
+
+  text-shadow:
+    0 2px 5px rgba(255, 249, 235, 0.95),
+    0 1px 2px rgba(20, 55, 42, 0.15);
+}
+
+/* ── Sous-titre ───────────────────────────────────────── */
+
+.page-sub {
+  margin: 10px 0 0;
+
+  font-family: var(--display-font);
+
+  font-size: 17px;
+
+  line-height: 1.25;
+
+  color: #4b3827;
+
+  opacity: 1;
+
+  font-weight: 500;
+
+  letter-spacing: 0.3px;
+
+  text-shadow: 0 1px 4px rgba(255, 249, 235, 0.95);
+}
+
+/* ==========================================================
+   LIGNE DORÉE
+   ========================================================== */
+
 .gold-rule {
+  width: 72%;
+
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold),
+    var(--gold-light),
+    var(--gold),
+    transparent
+  );
+
   border: none;
-  margin: 20px 0;
+
+  margin: 14px auto 20px;
+
+  opacity: 0.85;
 }
 
-/* Toast */
+/* ==========================================================
+   TOAST
+   ========================================================== */
+
 .toast {
   position: fixed;
+
   bottom: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--forest-dark);
-  color: var(--ivory-soft);
-  padding: 12px 24px;
-  border-radius: var(--radius-pill);
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  z-index: 999;
-  white-space: nowrap;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.error { background: var(--terracotta); }
 
-/* Spinner */
+  transform: translateX(-50%) translateY(20px);
+
+  background: linear-gradient(135deg, var(--forest-dark), var(--forest));
+
+  color: var(--ivory);
+
+  padding: 13px 24px;
+
+  border-radius: var(--radius-pill);
+
+  font-size: 14px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
+
+  z-index: 999;
+
+  white-space: nowrap;
+
+  box-shadow: 0 8px 24px rgba(28, 52, 43, 0.2);
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.error {
+  background: linear-gradient(
+    135deg,
+    var(--terracotta-dark),
+    var(--terracotta)
+  );
+}
+
+/* ==========================================================
+   SPINNER
+   ========================================================== */
+
 .spinner {
-  width: 20px; height: 20px;
-  border: 3px solid rgba(61,107,79,0.2);
-  border-top-color: var(--forest);
+  width: 20px;
+  height: 20px;
+
+  border: 3px solid rgba(40, 70, 58, 0.16);
+
+  border-top-color: var(--gold);
+
   border-radius: 50%;
+
   animation: spin 0.8s linear infinite;
+
   display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-.hidden { display: none !important; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================
+   ACCESSIBILITÉ / FOCUS CLAVIER
+   ========================================================== */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--gold);
+
+  outline-offset: 3px;
+}
+
+/* ==========================================================
+   UTILITAIRES
+   ========================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================
+   PETITS ÉCRANS
+   ========================================================== */
+
+@media (max-width: 480px) {
+  .card {
+    padding: 24px 18px;
+
+    border-radius: var(--radius-md);
+  }
+
+  .page-title {
+    font-size: 50px;
+  }
+
+  .page-sub {
+    font-size: 16px;
+  }
+
+  .btn {
+    min-height: 50px;
+  }
+}
+
+/* ==========================================================
+   I&D QUIZ — CARTES DES TABLES
+   Refonte graphique premium
+   ========================================================== */
+
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  margin-top: 10px;
+}
+
+/* ----------------------------------------------------------
+   CARTE INDIVIDUELLE
+   ---------------------------------------------------------- */
+
+.table-option {
+  position: relative;
+  min-width: 0;
+}
+
+/* Le bouton radio réel reste présent pour le JavaScript,
+   mais devient invisible visuellement. */
+
+.table-option input[type="radio"] {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ----------------------------------------------------------
+   CARTE
+   ---------------------------------------------------------- */
+
+.table-option label {
+  position: relative;
+
+  min-height: 86px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 10px 6px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(248, 244, 235, 0.96)
+  );
+
+  border: 1.5px solid rgba(40, 70, 58, 0.15);
+
+  border-radius: 16px;
+
+  color: var(--forest-dark);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(43, 38, 32, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-normal),
+    background var(--transition-normal);
+}
+
+/* ----------------------------------------------------------
+   PETIT FILET DORÉ
+   ---------------------------------------------------------- */
+
+.table-option label::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 22%;
+  right: 22%;
+
+  height: 2px;
+
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+
+  opacity: 0.45;
+
+  border-radius: 999px;
+}
+
+/* ----------------------------------------------------------
+   PICTOGRAMME
+   ---------------------------------------------------------- */
+
+.table-option .t-emoji {
+  display: block;
+
+  font-size: 28px;
+
+  line-height: 1;
+
+  transform: translateY(0);
+
+  filter: drop-shadow(0 2px 2px rgba(43, 38, 32, 0.1));
+
+  transition:
+    transform var(--transition-fast),
+    filter var(--transition-fast);
+}
+
+/* ----------------------------------------------------------
+   NOM DE LA TABLE
+   ---------------------------------------------------------- */
+
+.table-option label > span:last-child {
+  display: block;
+
+  max-width: 100%;
+
+  text-align: center;
+
+  font-family: var(--text-font);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  line-height: 1.15;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+
+  color: var(--forest);
+
+  overflow-wrap: anywhere;
+}
+
+/* ----------------------------------------------------------
+   SURVOL
+   ---------------------------------------------------------- */
+
+.table-option label:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(201, 164, 92, 0.7);
+
+  box-shadow:
+    0 8px 18px rgba(43, 38, 32, 0.09),
+    0 0 0 1px rgba(201, 164, 92, 0.08);
+
+  background: linear-gradient(145deg, #ffffff, var(--gold-pale));
+}
+
+.table-option label:hover .t-emoji {
+  transform: translateY(-2px) scale(1.06);
+}
+
+/* ----------------------------------------------------------
+   TABLE SÉLECTIONNÉE
+   ---------------------------------------------------------- */
+
+.table-option input[type="radio"]:checked + label {
+  background: linear-gradient(145deg, var(--forest), var(--forest-dark));
+
+  border-color: var(--gold);
+
+  color: var(--ivory);
+
+  box-shadow:
+    0 9px 22px rgba(28, 52, 43, 0.22),
+    0 0 0 2px rgba(201, 164, 92, 0.14);
+}
+
+/* Filet doré plus visible lorsque sélectionné */
+
+.table-option input[type="radio"]:checked + label::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-light),
+    transparent
+  );
+
+  opacity: 0.95;
+}
+
+/* Emoji sélectionné */
+
+.table-option input[type="radio"]:checked + label .t-emoji {
+  transform: scale(1.08);
+
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
+}
+
+/* Nom sélectionné */
+
+.table-option input[type="radio"]:checked + label > span:last-child {
+  color: var(--ivory);
+}
+
+/* ----------------------------------------------------------
+   PETIT INDICATEUR DE SÉLECTION
+   ---------------------------------------------------------- */
+
+.table-option input[type="radio"]:checked + label::after {
+  content: "✓";
+
+  position: absolute;
+
+  top: 7px;
+  right: 8px;
+
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--gold);
+
+  color: var(--forest-dark);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
+}
+
+/* ----------------------------------------------------------
+   ÉTAT CLAVIER
+   ---------------------------------------------------------- */
+
+.table-option input[type="radio"]:focus-visible + label {
+  outline: 2px solid var(--gold);
+
+  outline-offset: 3px;
+}
+
+/* ----------------------------------------------------------
+   TÉLÉPHONE
+   ---------------------------------------------------------- */
+
+@media (max-width: 380px) {
+  .tables-grid {
+    gap: 9px;
+  }
+
+  .table-option label {
+    min-height: 80px;
+
+    border-radius: 14px;
+  }
+
+  .table-option .t-emoji {
+    font-size: 25px;
+  }
+
+  .table-option label > span:last-child {
+    font-size: 10px;
+
+    letter-spacing: 0.55px;
+  }
+}
+/* ==========================================================
+   I&D QUIZ — BACKGROUND ÉCRAN D'ACCUEIL
+   Paysage fixe indépendant du contenu
+   ========================================================== */
+
+#screen-register::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image: url("../images/bg-register.jpg");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#screen-register > .page {
+  position: relative;
+  z-index: 1;
+}

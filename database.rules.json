@@ -1,0 +1,69 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "quiz": {
+      "config": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      "questions": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      "players": {
+        "$uid": {
+          ".read": "auth != null && (auth.uid === $uid || auth.token.admin === true)",
+          "firstName": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isString() && newData.val().length > 0 && newData.val().length <= 40"
+          },
+          "lastNameInitial": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isString() && newData.val().length === 1"
+          },
+          "table": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isString()"
+          },
+          ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.hasChildren(['firstName','lastNameInitial','table','status','currentQuestion','correctCount','totalTime','startedAt','completedAt','answers']) && newData.child('status').val() === 'not_started' && newData.child('currentQuestion').val() === 1 && newData.child('correctCount').val() === 0 && newData.child('totalTime').val() === 0 && newData.child('answers').hasChildren() === false",
+          ".validate": "newData.hasChildren(['firstName','lastNameInitial','table','status','currentQuestion','correctCount','totalTime','startedAt','completedAt','answers']) && newData.child('firstName').isString() && newData.child('firstName').val().length > 0 && newData.child('firstName').val().length <= 40 && newData.child('lastNameInitial').isString() && newData.child('lastNameInitial').val().length === 1 && newData.child('table').isString() && newData.child('status').isString() && (newData.child('status').val() === 'not_started' || newData.child('status').val() === 'in_progress' || newData.child('status').val() === 'completed') && newData.child('currentQuestion').isNumber() && newData.child('currentQuestion').val() >= 1 && newData.child('currentQuestion').val() <= 15 && newData.child('correctCount').isNumber() && newData.child('correctCount').val() >= 0 && newData.child('correctCount').val() <= 15 && newData.child('totalTime').isNumber() && newData.child('totalTime').val() >= 0 && newData.child('totalTime').val() <= 225 && newData.child('answers').hasChildren() === false",
+          "answers": {
+            ".read": "auth != null && (auth.uid === $uid || auth.token.admin === true)",
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "status": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "currentQuestion": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "correctCount": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "totalTime": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "startedAt": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "completedAt": {
+            ".write": "auth != null && auth.token.admin === true"
+          },
+          "questionStartedAt": {
+            ".write": "auth != null && auth.token.admin === true"
+          }
+        }
+      },
+      "game": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      "ranking": {
+        ".read": "auth != null && data.parent().parent().child('game').child('frozen').val() === true",
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      "deviceLocks": {
+        ".read": "false",
+        ".write": "false"
+      }
+    }
+  }
+}
