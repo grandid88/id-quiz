@@ -1600,6 +1600,20 @@
         transform: scale(0.98);
       }
 
+
+      /* ==========================================================
+         AJUSTEMENT TÉLÉPHONE — TROPHÉES DU SCORE FINAL
+         ========================================================== */
+
+      @media (max-width: 600px) {
+        #screen-result #btn-next-question.final-score-button .final-trophy-left {
+          transform: translate(calc(-50% - 115px), -50%);
+        }
+
+        #screen-result #btn-next-question.final-score-button .final-trophy-right {
+          transform: translate(calc(-50% + 115px), -50%);
+        }
+      }
       /* ==========================================================
                      PETITS ÉCRANS
                      ========================================================== */
@@ -2183,10 +2197,10 @@
       <div class="q-text" id="q-text"></div>
       <div class="answer-buttons">
         <button class="btn-vrai" id="btn-vrai">
-          <span class="btn-icon">✅</span>VRAI
+          <span class="btn-icon"></span>VRAI
         </button>
         <button class="btn-faux" id="btn-faux">
-          <span class="btn-icon">❌</span>FAUX
+          <span class="btn-icon"></span>FAUX
         </button>
       </div>
     </div>
@@ -2403,3 +2417,5 @@
     <script src="js/app.js"></script>
   </body>
 </html>
+
+
