@@ -114,6 +114,10 @@ async function showQuestion(qIdx) {
   qNumber.textContent = `Affirmation ${qIdx + 1} / ${QUESTIONS.length}`;
   qText.textContent = q.text;
   showScreen("game");
+  timerText.textContent = TIMER_SEC.toFixed(1);
+  timerBar.style.strokeDashoffset = 0;
+  timerBar.style.stroke = "var(--gold)";
+  timerText.style.color = "#fffdf5";
   try {
     const result = await startQuestionFn({ question: qIdx + 1 });
     if (token !== questionToken) return;
