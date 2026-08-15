@@ -6,105 +6,549 @@
 <title>I&D Quiz — Écran</title>
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/base.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 <style>
-  html, body { width:100%; height:100%; overflow:hidden; }
+/* ==========================================================
+   I&D QUIZ — SCREEN V5
+   Direction : ÉLÉGANCE TROPICALE MONOCHROME
+   Les cliparts décoratifs sont des SVG CC0 externes.
+   Aucun asset photographique / multicolore / généré.
+   ========================================================== */
 
-  .screen-wrap {
-    width:100vw; height:100vh;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    padding:40px 60px;
-    position:relative;
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.1), transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(61,107,79,0.1), transparent 50%),
-      var(--ivory-main);
-  }
+:root{
+  --paper:#f7f1e4;
+  --paper-2:#fffdf8;
+  --ink:#214b39;
+  --ink-soft:#5f665e;
+  --gold:#b58a3c;
+  --gold-soft:rgba(181,138,60,.48);
+  --gold-faint:rgba(181,138,60,.14);
+}
 
-  .s-screen { width:100%; }
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+}
 
-  /* ── Écran d'attente ──────────────────────────────────── */
-  #s-wait { text-align:center; }
-  .wait-big-icon { font-size:100px; animation:float 3s ease-in-out infinite; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-  .wait-big-title {
-    font-family: var(--script-font);
-    font-size: 80px;
-    color: var(--forest-dark);
-    text-shadow: 0 4px 24px rgba(61,107,79,0.15);
-    margin: 16px 0 12px;
-  }
-  .wait-big-sub { font-family:var(--display-font); font-size:24px; color:rgba(43,38,32,0.6); }
+.screen-wrap{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255,255,252,.98) 0%, rgba(255,252,244,.96) 34%, rgba(247,239,224,.98) 72%, #eadfc9 100%);
+}
 
-  /* ── Écran classement ─────────────────────────────────── */
-  #s-leaderboard { text-align:center; }
-  .lb-title {
-    font-family: var(--script-font);
-    font-size: 64px;
-    color: var(--forest-dark);
-    margin-bottom: 8px;
-  }
-  .lb-sub {
-    font-size: 18px;
-    color: rgba(43,38,32,0.55);
-    margin-bottom: 32px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
+.screen-wrap::before{
+  content:"";
+  position:absolute;
+  inset:2.7vh 2.4vw;
+  border:1px solid var(--gold-soft);
+  pointer-events:none;
+  z-index:10;
+}
 
-  .lb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-    max-width: 900px;
-    margin: 0 auto;
-    max-height: 70vh;
-    overflow-y: auto;
-    padding: 4px;
-  }
+.screen-wrap::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:18%;
+  height:64%;
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(255,255,255,.38), transparent 48%),
+    radial-gradient(ellipse at 12% 18%, rgba(181,138,60,.065), transparent 28%),
+    radial-gradient(ellipse at 88% 78%, rgba(120,101,73,.055), transparent 30%);
+  pointer-events:none;
+  z-index:0;
+}
 
-  .rank-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: var(--ivory-soft);
-    border: 1px solid rgba(61,107,79,0.1);
-    border-radius: 16px;
-    padding: 14px 20px;
-    box-shadow: var(--shadow-card);
-    animation: slideIn 0.4s ease both;
-  }
-  @keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+/* ----------------------------------------------------------
+   V5.4 — Matière ivoire & composition tropicale définitive
+   Motifs CSS très légers : aucun fond-image ajouté.
+   ---------------------------------------------------------- */
+.screen-wrap .arabesque{
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  width:clamp(210px,24vw,390px);
+  height:clamp(210px,24vw,390px);
+  border:1px solid rgba(181,138,60,.095);
+  border-radius:58% 42% 61% 39% / 45% 58% 42% 55%;
+  opacity:.78;
+  filter:blur(.15px);
+}
+.screen-wrap .arabesque::before,
+.screen-wrap .arabesque::after{
+  content:"";
+  position:absolute;
+  inset:11%;
+  border:1px solid rgba(181,138,60,.075);
+  border-radius:44% 56% 38% 62% / 62% 39% 61% 42%;
+}
+.screen-wrap .arabesque::after{
+  inset:25%;
+  border-color:rgba(181,138,60,.06);
+  border-radius:60% 40% 56% 44% / 43% 57% 40% 60%;
+}
+.arabesque-a{left:-8vw;top:8vh;transform:rotate(-18deg)}
+.arabesque-b{right:-8vw;top:4vh;transform:rotate(27deg) scaleX(-1)}
+.arabesque-c{left:-7vw;bottom:-9vh;transform:rotate(31deg) scale(.86)}
+.arabesque-d{right:-7vw;bottom:-9vh;transform:rotate(-24deg) scaleX(-1) scale(.92)}
 
-  .rank-item.rank-top-1 { border-color:var(--gold); background:rgba(201,168,76,0.1); transform:scale(1.02); }
-  .rank-item.rank-top-2 { border-color:rgba(192,192,192,0.5); }
-  .rank-item.rank-top-3 { border-color:rgba(205,127,50,0.4); }
+.screen-wrap .vine{
+  position:absolute;
+  z-index:1;
+  width:clamp(170px,18vw,300px);
+  height:clamp(80px,9vw,145px);
+  pointer-events:none;
+  opacity:.48;
+}
+.vine::before,
+.vine::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:50%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(181,138,60,.09) 20%,rgba(181,138,60,.12) 50%,rgba(181,138,60,.07) 80%,transparent);
+  transform:rotate(-12deg);
+}
+.vine::after{
+  top:34%;
+  transform:rotate(16deg);
+  opacity:.75;
+}
+.vine-a{left:4vw;top:31vh;transform:rotate(-8deg)}
+.vine-b{right:4vw;bottom:31vh;transform:rotate(8deg) scaleX(-1)}
 
-  .rank-pos  { font-size:28px; flex-shrink:0; }
-  .rank-name { font-size:20px; font-weight:700; color:var(--ink); flex:1; }
-  .rank-table{ font-size:13px; color:var(--forest); opacity:0.8; }
-  .rank-score{ font-size:24px; font-weight:800; color:var(--gold); }
-  .rank-score small { font-size:13px; font-weight:400; color:rgba(43,38,32,0.5); }
+.screen-wrap .leaflet{
+  position:absolute;
+  z-index:1;
+  width:34px;height:15px;
+  border:1px solid rgba(181,138,60,.105);
+  border-radius:100% 0 100% 0;
+  transform:rotate(-28deg);
+  pointer-events:none;
+}
+.leaflet-a{left:17vw;top:25vh}
+.leaflet-b{left:20vw;top:27vh;transform:rotate(17deg) scale(.8)}
+.leaflet-c{right:17vw;bottom:25vh;transform:rotate(28deg)}
+.leaflet-d{right:20vw;bottom:27vh;transform:rotate(-17deg) scale(.8)}
+
+/* ----------------------------------------------------------
+   V5.4 — Composition définitive des cliparts
+   4 éléments uniquement :
+   haut-gauche  = colibri
+   haut-droite  = palmier
+   bas-droite   = tortue
+   bas-gauche   = feuille de palmier
+   ---------------------------------------------------------- */
+.clip{
+  position:absolute;
+  z-index:2;
+  pointer-events:none;
+  user-select:none;
+  filter:
+    brightness(0)
+    saturate(100%)
+    invert(58%)
+    sepia(34%)
+    saturate(720%)
+    hue-rotate(354deg)
+    brightness(88%)
+    contrast(88%);
+}
+.clip img{display:block;width:100%;height:auto}
+
+/* HAUT-GAUCHE — colibri */
+.hummingbird{
+  left:4.2vw;
+  top:5.2vh;
+  width:clamp(105px,10vw,165px);
+  opacity:.66;
+}
+
+/* HAUT-DROITE — palmier */
+.palm-right{
+  right:1.8vw;
+  top:-2.5vh;
+  width:clamp(185px,20vw,335px);
+  opacity:.40;
+}
+
+/* HERBES — au pied du palmier supérieur droit */
+.palm-grass{
+  right:2.4vw;
+  top:16.5vh;
+  width:clamp(82px,8.5vw,145px);
+  opacity:.34;
+  transform:rotate(-4deg);
+  z-index:3;
+}
+
+/* BAS-DROITE — tortue */
+.turtle{
+  right:5vw;
+  bottom:5vh;
+  left:auto;
+  width:clamp(130px,12.5vw,205px);
+  opacity:.62;
+  transform:scaleX(-1);
+}
+
+/* BAS-GAUCHE — feuille de palmier */
+.leaf{
+  left:1.8vw;
+  bottom:3.5vh;
+  top:auto;
+  width:clamp(135px,14vw,230px);
+  opacity:.42;
+  transform:rotate(-8deg);
+}
+
+/* Aucun autre clipart décoratif sur cette version. */
+
+/* Quelques micro-points or, purement CSS */
+.gold-dots{
+  position:absolute;
+  z-index:1;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--gold);
+  opacity:.45;
+  box-shadow:
+    28px 17px 0 -1px rgba(181,138,60,.38),
+    53px -8px 0 -2px rgba(181,138,60,.30),
+    71px 29px 0 -2px rgba(181,138,60,.24);
+}
+.dots-a{left:22vw;top:27vh}
+.dots-b{right:22vw;bottom:29vh;transform:scale(.8)}
+
+/* ----------------------------------------------------------
+   Écran d'attente
+   ---------------------------------------------------------- */
+#s-wait{
+  position:relative;
+  z-index:5;
+  width:min(78vw,1320px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(22px,3vh,38px) clamp(38px,4.5vw,72px);
+  text-align:center;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+.wait-kicker{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:#496454;
+  font-family:var(--display-font);
+  font-size:clamp(10px,.78vw,14px);
+  font-weight:700;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+}
+.wait-kicker::before,
+.wait-kicker::after{
+  content:"";
+  width:clamp(55px,8vw,140px);
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.wait-kicker::after{
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+
+.wait-title{
+  margin:18px 0 0;
+  font-family:"Allura", var(--script-font), cursive;
+  font-size:clamp(76px,6.1vw,108px);
+  font-weight:400;
+  line-height:.88;
+  color:var(--ink);
+  text-shadow:0 5px 18px rgba(33,75,57,.07);
+}
+
+.wait-rule{
+  width:190px;
+  height:1px;
+  margin:24px auto 24px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.wait-question{
+  margin:0;
+  font-family:var(--display-font);
+  font-size:clamp(17px,1.30vw,23px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#686257;
+}
+
+.wait-date{
+  margin:17px 0 0;
+  font-family:var(--display-font);
+  font-size:clamp(11px,.90vw,16px);
+  letter-spacing:.22em;
+  color:#8a7d69;
+  text-transform:uppercase;
+}
+
+.wait-status{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-top:32px;
+  padding:11px 26px;
+  border:1px solid var(--gold-soft);
+  border-radius:999px;
+  background:rgba(255,253,247,.72);
+  color:#45604e;
+  font-family:var(--display-font);
+  font-size:clamp(11px,1vw,16px);
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  box-shadow:0 10px 28px rgba(80,62,33,.08);
+}
+.wait-status::before{
+  content:"";
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold);
+}
+
+/* ----------------------------------------------------------
+   Classement final
+   ---------------------------------------------------------- */
+#s-leaderboard{
+  position:relative;
+  z-index:5;
+  width:min(82vw,1400px);
+  text-align:center;
+  padding:clamp(22px,2.8vh,36px) clamp(36px,4.5vw,72px);
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+
+.lb-kicker{
+  color:#496454;
+  font-family:var(--display-font);
+  font-size:clamp(10px,1vw,15px);
+  font-weight:800;
+  letter-spacing:.31em;
+  text-transform:uppercase;
+}
+
+.lb-title{
+  margin:12px 0 0;
+  font-family:var(--script-font);
+  font-size:clamp(58px,4.9vw,84px);
+  line-height:.80;
+  font-weight:400;
+  color:var(--ink);
+}
+
+.lb-rule{
+  width:190px;
+  height:1px;
+  margin:18px auto 14px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.lb-sub{
+  margin:0 0 25px;
+  font-family:var(--display-font);
+  font-size:clamp(11px,1vw,16px);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#777064;
+}
+
+.lb-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px 16px;
+  width:100%;
+  max-height:60vh;
+  overflow:hidden;
+  padding:5px;
+}
+
+.rank-item{
+  min-height:69px;
+  display:grid;
+  grid-template-columns:55px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:8px 17px;
+  border:1px solid rgba(33,75,57,.13);
+  border-radius:17px;
+  background:rgba(255,253,248,.90);
+  box-shadow:0 9px 24px rgba(71,55,31,.10);
+  text-align:left;
+}
+
+.rank-pos{
+  text-align:center;
+  color:var(--gold);
+  font-size:25px;
+  font-weight:900;
+}
+.rank-name{
+  min-width:0;
+  color:#2f382f;
+  font-family:var(--display-font);
+  font-size:clamp(16px,1.25vw,22px);
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.rank-table{
+  margin-top:2px;
+  color:#64705f;
+  font-family:var(--display-font);
+  font-size:10px;
+}
+.rank-score{
+  color:var(--gold);
+  font-family:var(--display-font);
+  font-size:clamp(20px,1.5vw,28px);
+  font-weight:900;
+  white-space:nowrap;
+}
+.rank-score small{
+  color:#81796d;
+  font-size:10px;
+  font-weight:500;
+}
+
+.rank-item.rank-top-1{
+  border:1.5px solid rgba(181,138,60,.72);
+  background:linear-gradient(110deg,rgba(255,248,222,.96),rgba(255,253,248,.96));
+  box-shadow:0 16px 34px rgba(181,138,60,.15),0 9px 24px rgba(71,55,31,.09);
+  transform:scale(1.012);
+}
+.rank-item.rank-top-1 .rank-pos{font-size:31px}
+.rank-item.rank-top-2{border-color:rgba(115,115,115,.22)}
+.rank-item.rank-top-3{border-color:rgba(157,101,48,.25)}
+
+/* Petit rappel de boussole sous le classement */
+.lb-signature{
+  margin-top:19px;
+  color:#8a7d69;
+  font-family:var(--display-font);
+  font-size:10px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+}
+
+/* ----------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------- */
+@media(max-width:900px){
+  .lb-grid{grid-template-columns:1fr}
+  .wait-title{font-size:clamp(70px,13vw,110px)}
+  .palm-left,.palm-right{width:22vw}
+}
+@media(orientation:portrait){
+  .screen-wrap::before{inset:1.5vh 2vw}
+  #s-wait{width:92vw;padding:22px 18px}
+  #s-leaderboard{width:94vw}
+  .wait-kicker{letter-spacing:.22em}
+  .wait-title{font-size:clamp(54px,12.5vw,86px)}
+  .wait-question{font-size:13px;letter-spacing:.12em}
+  .lb-title{font-size:clamp(54px,14vw,84px)}
+  .lb-grid{grid-template-columns:1fr;max-height:64vh}
+  .rank-item{grid-template-columns:48px minmax(0,1fr) auto;min-height:61px;padding:7px 11px}
+  .palm-right{opacity:.24}
+  .palm-grass{opacity:.22}
+  .arabesque{opacity:.48}
+  .vine{opacity:.32}
+  .turtle{left:4vw;opacity:.26}
+  .hibiscus{right:4vw;opacity:.23}
+  .compass{right:4vw;opacity:.20}
+}
 </style>
 </head>
+
 <body>
 <div class="screen-wrap">
 
+  <!-- Fond décoratif V5.3 : arabesques ton sur ton -->
+  <span class="arabesque arabesque-a" aria-hidden="true"></span>
+  <span class="arabesque arabesque-b" aria-hidden="true"></span>
+  <span class="arabesque arabesque-c" aria-hidden="true"></span>
+  <span class="arabesque arabesque-d" aria-hidden="true"></span>
+  <span class="vine vine-a" aria-hidden="true"></span>
+  <span class="vine vine-b" aria-hidden="true"></span>
+  <span class="leaflet leaflet-a" aria-hidden="true"></span>
+  <span class="leaflet leaflet-b" aria-hidden="true"></span>
+  <span class="leaflet leaflet-c" aria-hidden="true"></span>
+  <span class="leaflet leaflet-d" aria-hidden="true"></span>
+
+  <!-- Famille monochrome : sources SVG CC0, aucun visuel généré -->
+  <!-- V5.4 : quatre cliparts définitifs, aucun visuel généré -->
+  <div class="clip hummingbird">
+    <img src="https://svgsilh.com/svg/150067.svg" alt="">
+  </div>
+  <div class="clip palm-right">
+    <img src="https://svgsilh.com/svg/294467.svg" alt="">
+  </div>
+  <div class="clip palm-grass">
+    <img src="https://svgsilh.com/download/2135345.svg" alt="">
+  </div>
+  <div class="clip turtle">
+    <img src="https://svgsilh.com/svg/294522.svg" alt="">
+  </div>
+  <div class="clip leaf">
+    <img src="https://svgsilh.com/svg/2135345.svg" alt="">
+  </div>
+
+  <span class="gold-dots dots-a" aria-hidden="true"></span>
+  <span class="gold-dots dots-b" aria-hidden="true"></span>
+
   <!-- ATTENTE -->
   <div id="s-wait" class="s-screen">
-    <div class="wait-big-icon">🎯</div>
-    <div class="wait-big-title">I&D Quiz</div>
-    <p class="wait-big-sub">Isabelle &amp; Didier · 26 juin 2027</p>
+    <div class="wait-kicker">Isabelle &amp; Didier · 26 juin 2027</div>
+    <div class="wait-title">I&amp;D Quiz</div>
+    <div class="wait-rule"></div>
+    <p class="wait-question">Qui connaît le mieux les mariés ?</p>
+    <p class="wait-date">Mission Paradis · Le grand défi des invités</p>
+    <div class="wait-status">Le classement apparaîtra ici</div>
   </div>
 
   <!-- CLASSEMENT FINAL -->
   <div id="s-leaderboard" class="s-screen hidden">
+    <div class="lb-kicker">I&amp;D Quiz · Mission Paradis</div>
     <div class="lb-title">Classement final</div>
-    <p class="lb-sub">I&D Quiz · Mission Paradis</p>
+    <div class="lb-rule"></div>
+    <p class="lb-sub">Qui connaît le mieux les mariés ?</p>
     <div class="lb-grid" id="se-leaderboard"></div>
+    <div class="lb-signature">Isabelle &amp; Didier · 26 juin 2027</div>
   </div>
 
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="js/firebase-config.js"></script>
